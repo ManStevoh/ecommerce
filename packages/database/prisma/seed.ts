@@ -121,8 +121,59 @@ async function main() {
         basePrice: p.price,
         currency: 'KES',
         isActive: true,
+        stockQuantity: 50,
       },
     });
+  }
+
+  const salmon = await prisma.product.findFirst({
+    where: { tenantId: tenant.id, slug: 'atlantic-salmon-fillet' },
+  });
+  if (salmon) {
+    const salmonVariants = [
+      { sku: 'SALMON-S', name: 'Small (300g)', price: 1999, size: 'Small' },
+      { sku: 'SALMON-M', name: 'Medium (500g)', price: 2499, size: 'Medium' },
+      { sku: 'SALMON-L', name: 'Large (1kg)', price: 4499, size: 'Large' },
+    ];
+    for (const v of salmonVariants) {
+      await prisma.productVariant.upsert({
+        where: { tenantId_sku: { tenantId: tenant.id, sku: v.sku } },
+        update: {},
+        create: {
+          tenantId: tenant.id,
+          productId: salmon.id,
+          sku: v.sku,
+          name: v.name,
+          price: v.price,
+          attributeValues: { size: v.size },
+        },
+      });
+    }
+  }
+
+  const prawns = await prisma.product.findFirst({
+    where: { tenantId: tenant.id, slug: 'tiger-prawns-500g' },
+  });
+  if (prawns) {
+    const prawnVariants = [
+      { sku: 'PRAWN-250', name: '250g pack', price: 999 },
+      { sku: 'PRAWN-500', name: '500g pack', price: 1899 },
+      { sku: 'PRAWN-1KG', name: '1kg family pack', price: 3499 },
+    ];
+    for (const v of prawnVariants) {
+      await prisma.productVariant.upsert({
+        where: { tenantId_sku: { tenantId: tenant.id, sku: v.sku } },
+        update: {},
+        create: {
+          tenantId: tenant.id,
+          productId: prawns.id,
+          sku: v.sku,
+          name: v.name,
+          price: v.price,
+          attributeValues: { pack: v.name },
+        },
+      });
+    }
   }
 
   const periodEnd = new Date();
@@ -200,6 +251,7 @@ async function main() {
   console.log('  Demo coupon: WELCOME10 (10% off, min KES 500)');
   console.log('  Demo segment: Repeat buyers (evaluate in Marketing → Segments)');
   console.log('  Demo campaign: Welcome back offer (Marketing → Campaigns → Send now)');
+  console.log('  Product variants: Salmon (3 sizes), Prawns (3 packs) on PDP');
 
   await indexProductsForSearch(tenant.id);
 }

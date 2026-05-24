@@ -33,7 +33,7 @@ export default function CartPage() {
       <div className="grid gap-8 lg:grid-cols-3">
         <div className="space-y-4 lg:col-span-2">
           {items.map((item) => (
-            <Card key={item.id}>
+            <Card key={item.lineKey}>
               <CardContent className="flex gap-4 p-4">
                 <div className="relative h-24 w-20 shrink-0 overflow-hidden rounded-lg">
                   <Image
@@ -62,7 +62,7 @@ export default function CartPage() {
                         size="icon"
                         className="h-8 w-8"
                         onClick={() =>
-                          updateQuantity(item.id, item.quantity - 1)
+                          updateQuantity(item.lineKey, item.quantity - 1)
                         }
                       >
                         <Minus className="h-3 w-3" />
@@ -75,7 +75,7 @@ export default function CartPage() {
                         size="icon"
                         className="h-8 w-8"
                         onClick={() =>
-                          updateQuantity(item.id, item.quantity + 1)
+                          updateQuantity(item.lineKey, item.quantity + 1)
                         }
                       >
                         <Plus className="h-3 w-3" />
@@ -84,7 +84,7 @@ export default function CartPage() {
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => removeItem(item.id)}
+                      onClick={() => removeItem(item.lineKey)}
                     >
                       <Trash2 className="h-4 w-4 text-red-500" />
                     </Button>

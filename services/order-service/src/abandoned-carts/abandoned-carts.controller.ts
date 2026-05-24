@@ -15,4 +15,9 @@ export class AbandonedCartsController {
   process(@Body() body: { storeUrl?: string }) {
     return this.abandonedCartsService.processReminders(body.storeUrl);
   }
+
+  @Post('process-all')
+  processAll(@Body() body: { storeUrl?: string }) {
+    return this.abandonedCartsService.processAllTenants(body.storeUrl);
+  }
 }

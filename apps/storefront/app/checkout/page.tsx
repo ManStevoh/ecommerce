@@ -77,7 +77,7 @@ export default function CheckoutPage() {
       void upsertAbandonedCart(TENANT_ID, {
         customerEmail: email,
         items: items.map((item) => ({
-          productId: item.id,
+          productId: item.productId,
           name: item.name,
           quantity: item.quantity,
           unitPrice: item.price,
@@ -158,8 +158,9 @@ export default function CheckoutPage() {
             postalCode: form.get('postalCode') as string,
           },
           items: items.map((item) => ({
-            productId: item.id,
-            sku: item.slug,
+            productId: item.productId,
+            variantId: item.variantId,
+            sku: item.variantId ?? item.slug,
             name: item.name,
             quantity: item.quantity,
             unitPrice: item.price,

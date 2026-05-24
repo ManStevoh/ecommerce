@@ -3,8 +3,14 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Badge, Button } from '@nexora/ui';
 import { ArrowLeft } from 'lucide-react';
-import { fetchProductBySlug, fetchReviews, getProductPrice } from '@/lib/api';
-import { AddToCartButton } from '@/components/add-to-cart-button';
+import {
+  fetchProductBySlug,
+  fetchProductVariants,
+  fetchReviews,
+  getProductImage,
+  getProductPrice,
+} from '@/lib/api';
+import { ProductPurchasePanel } from '@/components/product-purchase-panel';
 import { ProductReviews } from '@/components/product-reviews';
 
 const TENANT_ID = process.env.NEXT_PUBLIC_TENANT_ID ?? '';
@@ -41,13 +47,13 @@ export default async function ProductPage({
   const product = await fetchProductBySlug(slug, TENANT_ID);
   if (!product) notFound();
 
+  const [variants, reviewsData] = await Promise.all([
+    fetchProductVariants(product.id, TENANT_ID),
+    fetchReviews(product.id, TENANT_ID),
+  ]);
+
   const price = getProductPrice(product);
-  const reviewsData = await fetchReviews(product.id, TENANT_ID);
-  const images = (product as { images?: unknown }).images;
-  const imageUrl =
-    Array.isArray(images) && images.length > 0
-      ? String(images[0])
-      : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&h=800&fit=crop';
+  const imageUrl = getProductImage(product);
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -86,21 +92,18 @@ export default async function ProductPage({
           <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
             {product.name}
           </h1>
-          <p className="mt-4 text-2xl font-light text-amber-600 dark:text-amber-400">
-            {product.currency} {price.toLocaleString()}
-          </p>
-          <p className="mt-6 text-lg leading-relaxed text-zinc-600 dark:text-zinc-400">
+          <p className="mt-6 text-lg leading-relaxed text-theme-muted">
             {product.description ?? 'Premium quality product.'}
           </p>
           <div className="mt-8">
-            <AddToCartButton
-              product={{
-                id: product.id,
-                slug: product.slug,
-                name: product.name,
-                price,
-                image: imageUrl,
-              }}
+            <ProductPurchasePanel
+              productId={product.id}
+              slug={product.slug}
+              productName={product.name}
+              basePrice={price}
+              currency={product.currency}
+              image={imageUrl}
+              variants={variants}
             />
           </div>
         </div>

@@ -22,7 +22,7 @@ export function AddToCartButton({ product }: { product: CartProduct }) {
       className="w-full sm:w-auto"
       onClick={() =>
         addItem({
-          id: product.id,
+          productId: product.id,
           slug: product.slug,
           name: product.name,
           price: product.price,

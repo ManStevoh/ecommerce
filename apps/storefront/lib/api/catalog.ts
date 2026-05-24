@@ -53,3 +53,45 @@ export async function fetchProductBySlug(
   const products = await fetchProducts(tenantId);
   return products.find((p) => p.slug === slug) ?? null;
 }
+
+export type ProductVariant = {
+  id: string;
+  productId: string;
+  sku: string;
+  name: string | null;
+  price: number | string;
+  attributeValues?: Record<string, string | number | boolean> | null;
+};
+
+export function getVariantPrice(variant: ProductVariant): number {
+  if (typeof variant.price === 'number') return variant.price;
+  return parseFloat(String(variant.price)) || 0;
+}
+
+export function getVariantLabel(variant: ProductVariant): string {
+  if (variant.name) return variant.name;
+  const attrs = variant.attributeValues;
+  if (attrs && typeof attrs === 'object') {
+    return Object.entries(attrs)
+      .map(([k, v]) => `${k}: ${v}`)
+      .join(' · ');
+  }
+  return variant.sku;
+}
+
+export async function fetchProductVariants(
+  productId: string,
+  tenantId: string,
+): Promise<ProductVariant[]> {
+  try {
+    const res = await fetch(
+      `${API_URL}/api/v1/variants?productId=${productId}`,
+      { headers: tenantHeaders(tenantId), next: { revalidate: 60 } },
+    );
+    if (!res.ok) return [];
+    const data = await res.json();
+    return Array.isArray(data) ? data : [];
+  } catch {
+    return [];
+  }
+}

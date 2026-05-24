@@ -40,6 +40,29 @@ export class AbandonedCartsService {
 
   async processReminders(storeUrl?: string) {
     const tenantId = this.tenantContext.getTenantId();
+    return this.processRemindersForTenant(tenantId, storeUrl);
+  }
+
+  async processAllTenants(storeUrl?: string) {
+    const tenants = await this.prisma.tenant.findMany({
+      where: { status: 'ACTIVE' },
+      select: { id: true, subdomain: true },
+    });
+
+    let sent = 0;
+    for (const tenant of tenants) {
+      const base =
+        storeUrl ??
+        process.env.STOREFRONT_URL ??
+        `http://${tenant.subdomain}.localhost:3100`;
+      const result = await this.processRemindersForTenant(tenant.id, base);
+      sent += result.sent;
+    }
+
+    return { tenants: tenants.length, sent };
+  }
+
+  async processRemindersForTenant(tenantId: string, storeUrl?: string) {
     const cutoff = new Date(Date.now() - 60 * 60 * 1000);
     const carts = await this.prisma.abandonedCart.findMany({
       where: {

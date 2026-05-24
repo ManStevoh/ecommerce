@@ -2,7 +2,9 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 export type CartItem = {
-  id: string;
+  lineKey: string;
+  productId: string;
+  variantId?: string;
   slug: string;
   name: string;
   price: number;
@@ -10,11 +12,15 @@ export type CartItem = {
   image: string;
 };
 
+export function cartLineKey(productId: string, variantId?: string): string {
+  return variantId ? `${productId}:${variantId}` : productId;
+}
+
 type CartState = {
   items: CartItem[];
-  addItem: (item: Omit<CartItem, "quantity">, quantity?: number) => void;
-  removeItem: (id: string) => void;
-  updateQuantity: (id: string, quantity: number) => void;
+  addItem: (item: Omit<CartItem, "quantity" | "lineKey">, quantity?: number) => void;
+  removeItem: (lineKey: string) => void;
+  updateQuantity: (lineKey: string, quantity: number) => void;
   clearCart: () => void;
 };
 
@@ -23,35 +29,66 @@ export const useCartStore = create<CartState>()(
     (set, get) => ({
       items: [],
       addItem: (item, quantity = 1) => {
-        const existing = get().items.find((i) => i.id === item.id);
+        const lineKey = cartLineKey(item.productId, item.variantId);
+        const existing = get().items.find((i) => i.lineKey === lineKey);
         if (existing) {
           set({
             items: get().items.map((i) =>
-              i.id === item.id
+              i.lineKey === lineKey
                 ? { ...i, quantity: i.quantity + quantity }
                 : i
             ),
           });
         } else {
-          set({ items: [...get().items, { ...item, quantity }] });
+          set({
+            items: [...get().items, { ...item, lineKey, quantity }],
+          });
         }
       },
-      removeItem: (id) =>
-        set({ items: get().items.filter((i) => i.id !== id) }),
-      updateQuantity: (id, quantity) => {
+      removeItem: (lineKey) =>
+        set({ items: get().items.filter((i) => i.lineKey !== lineKey) }),
+      updateQuantity: (lineKey, quantity) => {
         if (quantity <= 0) {
-          get().removeItem(id);
+          get().removeItem(lineKey);
           return;
         }
         set({
           items: get().items.map((i) =>
-            i.id === id ? { ...i, quantity } : i
+            i.lineKey === lineKey ? { ...i, quantity } : i
           ),
         });
       },
       clearCart: () => set({ items: [] }),
     }),
-    { name: "nexora-cart" }
+    {
+      name: "nexora-cart",
+      version: 2,
+      migrate: (persisted) => {
+        const state = persisted as { items?: Array<Record<string, unknown>> };
+        if (!state?.items) return state as CartState;
+        return {
+          items: state.items.map((item) => {
+            const productId = String(item.productId ?? item.id ?? "");
+            const variantId = item.variantId
+              ? String(item.variantId)
+              : undefined;
+            const lineKey = String(
+              item.lineKey ?? cartLineKey(productId, variantId),
+            );
+            return {
+              lineKey,
+              productId,
+              variantId,
+              slug: String(item.slug ?? ""),
+              name: String(item.name ?? ""),
+              price: Number(item.price ?? 0),
+              quantity: Number(item.quantity ?? 1),
+              image: String(item.image ?? ""),
+            };
+          }),
+        } as CartState;
+      },
+    }
   )
 );
 

@@ -63,7 +63,7 @@ export function RecommendedProducts() {
                 size="sm"
                 onClick={() =>
                   addItem({
-                    id: item.productId,
+                    productId: item.productId,
                     slug: item.slug,
                     name: item.name,
                     price: item.price,

@@ -86,7 +86,7 @@ export function ProductGrid() {
               className="mt-4 w-full"
               onClick={() =>
                 addItem({
-                  id: product.id,
+                  productId: product.id,
                   slug: product.slug,
                   name: product.name,
                   price: product.price,
