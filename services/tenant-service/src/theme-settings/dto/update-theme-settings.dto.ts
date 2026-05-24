@@ -3,6 +3,11 @@ import { IsBoolean, IsOptional, IsString, IsUrl, MaxLength } from 'class-validat
 export class UpdateThemeSettingsDto {
   @IsOptional()
   @IsString()
+  @MaxLength(50)
+  themePreset?: string;
+
+  @IsOptional()
+  @IsString()
   @MaxLength(20)
   primaryColor?: string;
 

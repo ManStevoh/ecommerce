@@ -69,6 +69,7 @@ async function main() {
       },
       themeSettings: {
         create: {
+          themePreset: 'ocean',
           primaryColor: '#0c4a6e',
           accentColor: '#06b6d4',
         },

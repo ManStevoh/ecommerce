@@ -27,6 +27,7 @@ export type StoreSettings = {
 export type ThemeSettings = {
   id: string;
   tenantId: string;
+  themePreset: string;
   primaryColor: string;
   secondaryColor: string;
   accentColor: string;
@@ -36,6 +37,25 @@ export type ThemeSettings = {
   darkMode: boolean;
   customCss: string | null;
 };
+
+export type ThemePresetSummary = {
+  slug: string;
+  name: string;
+  description: string;
+  primaryColor: string;
+  secondaryColor: string;
+  accentColor: string;
+  darkMode: boolean;
+};
+
+export async function fetchThemePresets(): Promise<ThemePresetSummary[]> {
+  const res = await fetch(`${API_BASE}/api/v1/theme-settings/presets`, {
+    headers: headers(),
+    cache: 'no-store',
+  });
+  if (!res.ok) return [];
+  return res.json();
+}
 
 export type CurrentTenant = {
   id: string;
@@ -103,6 +123,7 @@ export async function updateThemeSettings(
   data: Partial<
     Pick<
       ThemeSettings,
+      | 'themePreset'
       | 'primaryColor'
       | 'secondaryColor'
       | 'accentColor'

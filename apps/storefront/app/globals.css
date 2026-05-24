@@ -14,11 +14,14 @@
   }
 
   body {
-    @apply bg-zinc-50 text-zinc-900 antialiased dark:bg-zinc-950 dark:text-zinc-50;
+    @apply antialiased;
   }
 
   .tenant-branded {
     font-family: var(--font-sans, Inter, sans-serif);
+    background-color: var(--tenant-bg, #fafafa);
+    color: var(--tenant-text, #18181b);
+    min-height: 100%;
   }
 
   .tenant-branded a:hover {
@@ -26,12 +29,66 @@
   }
 }
 
-@layer utilities {
+@layer components {
   .glass {
-    @apply border border-white/20 bg-white/10 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-black/20;
+    @apply border shadow-xl backdrop-blur-xl;
+    border-color: var(--tenant-border, rgba(255, 255, 255, 0.2));
+    background: var(--tenant-surface, rgba(255, 255, 255, 0.1));
   }
 
   .glass-card {
-    @apply rounded-2xl border border-zinc-200/40 bg-white/60 shadow-lg backdrop-blur-2xl dark:border-zinc-700/40 dark:bg-zinc-900/60;
+    @apply border shadow-lg backdrop-blur-2xl;
+    border-radius: var(--tenant-radius, 1rem);
+    border-color: var(--tenant-border, rgba(161, 161, 170, 0.35));
+    background: var(--tenant-surface, rgba(255, 255, 255, 0.72));
+  }
+
+  .theme-hero-gradient {
+    background: var(--tenant-hero-gradient);
+  }
+
+  .text-theme-accent {
+    color: var(--tenant-accent);
+  }
+
+  .text-theme-muted {
+    color: var(--tenant-muted);
+  }
+
+  .text-theme-secondary {
+    color: var(--tenant-secondary);
+  }
+
+  .bg-theme-accent {
+    background-color: var(--tenant-accent);
+  }
+
+  .theme-btn-primary {
+    background: var(--tenant-btn-bg);
+    color: var(--tenant-btn-text);
+    box-shadow: var(--tenant-btn-shadow);
+  }
+
+  .theme-btn-primary:hover {
+    filter: brightness(1.06);
+  }
+
+  .theme-preview-swatch {
+    border-radius: var(--tenant-radius, 0.75rem);
+  }
+
+  /* Legacy amber utilities → active theme accent */
+  .tenant-branded .text-amber-600,
+  .tenant-branded .text-amber-400,
+  .tenant-branded .dark\:text-amber-400 {
+    color: var(--tenant-accent) !important;
+  }
+
+  .tenant-branded .bg-amber-500 {
+    background-color: var(--tenant-accent) !important;
+  }
+
+  .tenant-branded .hover\:text-amber-600:hover {
+    color: var(--tenant-accent) !important;
   }
 }

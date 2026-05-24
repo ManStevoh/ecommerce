@@ -5,6 +5,7 @@ const TENANT_SUBDOMAIN =
   process.env.NEXT_PUBLIC_TENANT_SUBDOMAIN ?? "freshfish";
 
 export type TenantTheme = {
+  themePreset?: string | null;
   primaryColor: string;
   secondaryColor: string;
   accentColor: string;
@@ -23,6 +24,7 @@ export type TenantContext = {
 };
 
 const DEFAULT_THEME: TenantTheme = {
+  themePreset: 'luxury',
   primaryColor: "#0f172a",
   secondaryColor: "#64748b",
   accentColor: "#3b82f6",

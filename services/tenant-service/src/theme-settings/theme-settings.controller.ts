@@ -8,6 +8,11 @@ import { TenantContext } from '../common/interfaces/tenant-context.interface';
 export class ThemeSettingsController {
   constructor(private readonly themeSettingsService: ThemeSettingsService) {}
 
+  @Get('presets')
+  listPresets() {
+    return this.themeSettingsService.listPresets();
+  }
+
   @Get()
   get(@CurrentTenant() tenant: TenantContext) {
     return this.themeSettingsService.get(tenant.tenantId);

@@ -208,6 +208,7 @@ model StoreSettings {
 model ThemeSettings {
   id             String  @id @default(cuid())
   tenantId       String  @unique @map("tenant_id")
+  themePreset    String  @default("luxury") @map("theme_preset")
   primaryColor   String  @default("#0f172a") @map("primary_color")
   secondaryColor String  @default("#64748b") @map("secondary_color")
   accentColor    String  @default("#3b82f6") @map("accent_color")

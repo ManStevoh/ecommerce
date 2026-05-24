@@ -10,14 +10,19 @@ import {
   CardTitle,
   Input,
   Label,
+  PageHeader,
   Textarea,
 } from "@nexora/ui";
 import {
+  fetchThemePresets,
   fetchThemeSettings,
   updateThemeSettings,
+  type ThemePresetSummary,
 } from "@/lib/settings-api";
 
 export default function BrandingPage() {
+  const [presets, setPresets] = useState<ThemePresetSummary[]>([]);
+  const [selectedPreset, setSelectedPreset] = useState("luxury");
   const [primaryColor, setPrimaryColor] = useState("#0f172a");
   const [secondaryColor, setSecondaryColor] = useState("#64748b");
   const [accentColor, setAccentColor] = useState("#3b82f6");
@@ -32,8 +37,13 @@ export default function BrandingPage() {
 
   useEffect(() => {
     async function load() {
-      const theme = await fetchThemeSettings();
+      const [theme, presetList] = await Promise.all([
+        fetchThemeSettings(),
+        fetchThemePresets(),
+      ]);
+      setPresets(presetList);
       if (theme) {
+        setSelectedPreset(theme.themePreset ?? "luxury");
         setPrimaryColor(theme.primaryColor);
         setSecondaryColor(theme.secondaryColor);
         setAccentColor(theme.accentColor);
@@ -48,11 +58,22 @@ export default function BrandingPage() {
     void load();
   }, []);
 
+  function applyPreset(slug: string) {
+    const preset = presets.find((p) => p.slug === slug);
+    if (!preset) return;
+    setSelectedPreset(slug);
+    setPrimaryColor(preset.primaryColor);
+    setSecondaryColor(preset.secondaryColor);
+    setAccentColor(preset.accentColor);
+    setDarkMode(preset.darkMode);
+  }
+
   async function handleSave() {
     setSaving(true);
     setMessage(null);
     try {
       await updateThemeSettings({
+        themePreset: selectedPreset,
         primaryColor,
         secondaryColor,
         accentColor,
@@ -62,7 +83,7 @@ export default function BrandingPage() {
         darkMode,
         customCss: customCss || undefined,
       });
-      setMessage("Theme settings saved.");
+      setMessage("Theme settings saved. Refresh your storefront to see changes.");
     } catch {
       setMessage("Failed to save theme settings.");
     } finally {
@@ -71,19 +92,56 @@ export default function BrandingPage() {
   }
 
   return (
-    <div className="p-8">
-      <div className="mb-8">
-        <Link href="/settings" className="text-sm text-indigo-600 hover:underline">
-          ← Back to settings
-        </Link>
-        <h1 className="mt-2 text-2xl font-bold tracking-tight">Branding & Theme</h1>
-        <p className="text-zinc-500">
-          Colors and typography applied to your storefront
-        </p>
-      </div>
+    <div className="admin-page">
+      <PageHeader
+        title="Branding & Theme"
+        description="Choose from 11 storefront themes or customize colors and typography"
+        action={
+          <Link href="/settings">
+            <Button variant="outline">Back to settings</Button>
+          </Link>
+        }
+      />
+
+      <Card className="mb-6 border-zinc-200/80 bg-white shadow-sm">
+        <CardHeader>
+          <CardTitle>Storefront themes ({presets.length})</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {loading ? (
+            <p className="text-zinc-500">Loading themes…</p>
+          ) : (
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {presets.map((preset) => (
+                <button
+                  key={preset.slug}
+                  type="button"
+                  onClick={() => applyPreset(preset.slug)}
+                  className={`rounded-xl border p-4 text-left transition ${
+                    selectedPreset === preset.slug
+                      ? "border-indigo-500 ring-2 ring-indigo-200"
+                      : "border-zinc-200 hover:border-zinc-300"
+                  }`}
+                >
+                  <div
+                    className="mb-3 h-16 rounded-lg"
+                    style={{
+                      background: `linear-gradient(135deg, ${preset.primaryColor}, ${preset.accentColor})`,
+                    }}
+                  />
+                  <p className="font-medium text-zinc-900">{preset.name}</p>
+                  <p className="mt-1 text-xs text-zinc-500 line-clamp-2">
+                    {preset.description}
+                  </p>
+                </button>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       <div className="grid max-w-4xl gap-6 lg:grid-cols-2">
-        <Card>
+        <Card className="border-zinc-200/80 bg-white shadow-sm">
           <CardHeader>
             <CardTitle>Theme Colors</CardTitle>
           </CardHeader>
@@ -96,8 +154,8 @@ export default function BrandingPage() {
                 <ColorField label="Secondary" value={secondaryColor} onChange={setSecondaryColor} />
                 <ColorField label="Accent" value={accentColor} onChange={setAccentColor} />
                 <div>
-                  <label className="mb-1 block text-sm font-medium">Font Family</label>
-                  <Input value={fontFamily} onChange={(e) => setFontFamily(e.target.value)} />
+                  <Label htmlFor="font">Font Family</Label>
+                  <Input id="font" value={fontFamily} onChange={(e) => setFontFamily(e.target.value)} className="mt-1.5" />
                 </div>
                 <label className="flex items-center gap-2 text-sm">
                   <input
@@ -112,22 +170,18 @@ export default function BrandingPage() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-zinc-200/80 bg-white shadow-sm">
           <CardHeader>
             <CardTitle>Assets & Preview</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <label className="mb-1 block text-sm font-medium">Logo URL</label>
-              <Input
-                value={logoUrl}
-                onChange={(e) => setLogoUrl(e.target.value)}
-                placeholder="https://cdn.example.com/logo.png"
-              />
+              <Label htmlFor="logo">Logo URL</Label>
+              <Input id="logo" value={logoUrl} onChange={(e) => setLogoUrl(e.target.value)} className="mt-1.5" placeholder="https://cdn.example.com/logo.png" />
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium">Favicon URL</label>
-              <Input value={faviconUrl} onChange={(e) => setFaviconUrl(e.target.value)} />
+              <Label htmlFor="favicon">Favicon URL</Label>
+              <Input id="favicon" value={faviconUrl} onChange={(e) => setFaviconUrl(e.target.value)} className="mt-1.5" />
             </div>
             <div
               className="rounded-lg border p-6"
@@ -145,6 +199,7 @@ export default function BrandingPage() {
                 value={customCss}
                 onChange={(e) => setCustomCss(e.target.value)}
                 placeholder=".hero { border-radius: 1rem; }"
+                className="mt-1.5"
               />
             </div>
           </CardContent>
@@ -182,7 +237,7 @@ function ColorField({
         className="h-10 w-14 cursor-pointer rounded border"
       />
       <div className="flex-1">
-        <label className="mb-1 block text-sm font-medium">{label}</label>
+        <Label className="mb-1 block">{label}</Label>
         <Input value={value} onChange={(e) => onChange(e.target.value)} />
       </div>
     </div>

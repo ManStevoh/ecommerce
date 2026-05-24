@@ -15,7 +15,7 @@ const buttonVariants = cva(
           "border border-zinc-200 bg-transparent hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800",
         ghost: 'hover:bg-zinc-100 dark:hover:bg-zinc-800',
         luxury:
-          'bg-gradient-to-r from-amber-600 to-amber-500 text-white shadow-lg shadow-amber-500/25 hover:from-amber-500 hover:to-amber-400',
+          'theme-btn-primary inline-flex items-center justify-center rounded-lg font-medium transition-all hover:opacity-95',
         destructive:
           'bg-red-600 text-white shadow hover:bg-red-500 dark:bg-red-600 dark:hover:bg-red-500',
       },
