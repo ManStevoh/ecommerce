@@ -1,0 +1,159 @@
+# Nexora Commerce — full stack (data + apps)
+# Usage: docker compose -f infrastructure/docker/docker-compose.yml -f infrastructure/docker/docker-compose.apps.yml up -d
+
+services:
+  api-gateway:
+    image: node:20-alpine
+    container_name: nexora-api-gateway
+    working_dir: /app
+    volumes:
+      - ../../:/app
+    command: sh -c "corepack enable && pnpm --filter @nexora/api-gateway dev"
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://nexora:nexora_secret@postgres:5432/nexora
+      REDIS_URL: redis://redis:6379
+      AUTH_SERVICE_URL: http://auth-service:3001
+      TENANT_SERVICE_URL: http://tenant-service:3002
+      CATALOG_SERVICE_URL: http://product-service:3003
+      ORDER_SERVICE_URL: http://order-service:3004
+      PAYMENT_SERVICE_URL: http://payment-service:3005
+      SUBSCRIPTION_SERVICE_URL: http://subscription-service:3006
+      AI_SERVICE_URL: http://ai-service:3007
+      NOTIFICATION_SERVICE_URL: http://notification-service:3008
+      SEARCH_SERVICE_URL: http://search-service:3009
+      ANALYTICS_SERVICE_URL: http://analytics-service:3010
+      SUPPORT_SERVICE_URL: http://support-service:3011
+      MARKETING_SERVICE_URL: http://marketing-service:3012
+      CMS_SERVICE_URL: http://cms-service:3013
+      GRAPHQL_SERVICE_URL: http://graphql-api:3014
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - nexora-net
+
+  auth-service:
+    image: node:20-alpine
+    container_name: nexora-auth-service
+    working_dir: /app
+    volumes:
+      - ../../:/app
+    command: sh -c "corepack enable && pnpm --filter @nexora/auth-service dev"
+    environment:
+      DATABASE_URL: postgresql://nexora:nexora_secret@postgres:5432/nexora
+      REDIS_URL: redis://redis:6379
+      PORT: 3001
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - nexora-net
+
+  tenant-service:
+    image: node:20-alpine
+    container_name: nexora-tenant-service
+    working_dir: /app
+    volumes:
+      - ../../:/app
+    command: sh -c "corepack enable && pnpm --filter @nexora/tenant-service dev"
+    environment:
+      DATABASE_URL: postgresql://nexora:nexora_secret@postgres:5432/nexora
+      PORT: 3002
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - nexora-net
+
+  product-service:
+    image: node:20-alpine
+    container_name: nexora-product-service
+    working_dir: /app
+    volumes:
+      - ../../:/app
+    command: sh -c "corepack enable && pnpm --filter @nexora/product-service dev"
+    environment:
+      DATABASE_URL: postgresql://nexora:nexora_secret@postgres:5432/nexora
+      SEARCH_SERVICE_URL: http://search-service:3009
+      PORT: 3003
+    depends_on:
+      postgres:
+        condition: service_healthy
+      meilisearch:
+        condition: service_healthy
+    networks:
+      - nexora-net
+
+  order-service:
+    image: node:20-alpine
+    container_name: nexora-order-service
+    working_dir: /app
+    volumes:
+      - ../../:/app
+    command: sh -c "corepack enable && pnpm --filter @nexora/order-service dev"
+    environment:
+      DATABASE_URL: postgresql://nexora:nexora_secret@postgres:5432/nexora
+      REDIS_URL: redis://redis:6379
+      PORT: 3004
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - nexora-net
+
+  payment-service:
+    image: node:20-alpine
+    container_name: nexora-payment-service
+    working_dir: /app
+    volumes:
+      - ../../:/app
+    command: sh -c "corepack enable && pnpm --filter @nexora/payment-service dev"
+    environment:
+      DATABASE_URL: postgresql://nexora:nexora_secret@postgres:5432/nexora
+      PORT: 3005
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - nexora-net
+
+  search-service:
+    image: node:20-alpine
+    container_name: nexora-search-service
+    working_dir: /app
+    volumes:
+      - ../../:/app
+    command: sh -c "corepack enable && pnpm --filter @nexora/search-service dev"
+    environment:
+      MEILISEARCH_HOST: http://meilisearch:7700
+      MEILISEARCH_API_KEY: ${MEILISEARCH_API_KEY:-nexora_meili_master_key}
+      PORT: 3009
+    depends_on:
+      meilisearch:
+        condition: service_healthy
+    networks:
+      - nexora-net
+
+  storefront:
+    image: node:20-alpine
+    container_name: nexora-storefront
+    working_dir: /app
+    volumes:
+      - ../../:/app
+    command: sh -c "corepack enable && pnpm --filter @nexora/storefront dev"
+    ports:
+      - "3100:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:3000
+    depends_on:
+      - api-gateway
+    networks:
+      - nexora-net
+
+networks:
+  nexora-net:
+    driver: bridge

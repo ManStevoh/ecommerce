@@ -1,0 +1,36 @@
+{
+  "name": "nexora-commerce",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Multi-tenant AI-powered SaaS commerce ecosystem",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel",
+    "dev:storefront": "pnpm --filter @nexora/storefront dev",
+    "dev:admin": "pnpm --filter @nexora/admin-dashboard dev",
+    "dev:super-admin": "pnpm --filter @nexora/super-admin dev",
+    "dev:frontends": "turbo run dev --filter=@nexora/storefront --filter=@nexora/admin-dashboard --filter=@nexora/super-admin",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "test:payments": "node scripts/test-payment-gateways.mjs",
+    "test:payments:http": "node scripts/test-payment-gateways.mjs --http",
+    "db:generate": "pnpm --filter @nexora/database db:generate",
+    "db:migrate": "pnpm --filter @nexora/database db:migrate",
+    "db:push": "pnpm --filter @nexora/database db:push",
+    "db:seed": "pnpm --filter @nexora/database db:seed",
+    "dev:gateway": "pnpm --filter @nexora/api-gateway dev",
+    "dev:core": "turbo run dev --filter=@nexora/api-gateway --filter=@nexora/auth-service --filter=@nexora/tenant-service --filter=@nexora/product-service --filter=@nexora/order-service --filter=@nexora/payment-service --filter=@nexora/subscription-service --filter=@nexora/marketing-service --filter=@nexora/cms-service --filter=@nexora/graphql-api --filter=@nexora/notification-service --filter=@nexora/search-service",
+    "docker:up": "docker compose -f infrastructure/docker/docker-compose.yml up -d",
+    "docker:apps": "docker compose -f infrastructure/docker/docker-compose.yml -f infrastructure/docker/docker-compose.apps.yml up -d",
+    "docker:down": "docker compose -f infrastructure/docker/docker-compose.yml down"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@9.15.0",
+  "devDependencies": {
+    "turbo": "^2.3.3",
+    "typescript": "^5.7.2"
+  }
+}

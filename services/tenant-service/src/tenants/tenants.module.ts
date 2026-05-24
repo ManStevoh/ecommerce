@@ -1,0 +1,12 @@
+import { Module } from '@nestjs/common';
+import { TenantsController } from './tenants.controller';
+import { TenantsService } from './tenants.service';
+import { InternalApiGuard } from '../common/guards/internal-api.guard';
+import { PlatformAdminGuard } from '../common/guards/platform-admin.guard';
+
+@Module({
+  controllers: [TenantsController],
+  providers: [TenantsService, InternalApiGuard, PlatformAdminGuard],
+  exports: [TenantsService],
+})
+export class TenantsModule {}

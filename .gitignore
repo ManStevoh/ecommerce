@@ -1,0 +1,79 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+build/
+out/
+.next/
+.nuxt/
+.output/
+.turbo/
+*.tsbuildinfo
+
+# Environment & secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*.local
+!.env.example
+!**/.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Test & coverage
+coverage/
+.nyc_output/
+*.lcov
+
+# IDE & editors
+.idea/
+*.swp
+*.swo
+*~
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# NestJS / Node
+services/*/dist/
+apps/*/dist/
+packages/*/dist/
+
+# Prisma
+packages/database/prisma/migrations/**/migration_lock.toml
+
+# Docker local data
+infrastructure/docker/data/
+infrastructure/docker/.env
+
+# Misc
+*.pid
+*.seed
+.cache/
+temp/
+tmp/
+.eslintcache
+.vercel
