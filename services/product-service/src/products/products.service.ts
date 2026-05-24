@@ -143,4 +143,30 @@ export class ProductsService {
       return updated;
     });
   }
+
+  async incrementStock(items: { productId: string; quantity: number }[]) {
+    const tenantId = this.tenantContext.getTenantId();
+
+    return this.prisma.$transaction(async (tx) => {
+      const updated = [];
+
+      for (const item of items) {
+        const product = await tx.product.findFirst({
+          where: { id: item.productId, tenantId },
+        });
+        if (!product) {
+          throw new NotFoundException(`Product ${item.productId} not found`);
+        }
+
+        const available = product.stockQuantity ?? 0;
+        const next = await tx.product.update({
+          where: { id: item.productId },
+          data: { stockQuantity: available + item.quantity },
+        });
+        updated.push(next);
+      }
+
+      return updated;
+    });
+  }
 }

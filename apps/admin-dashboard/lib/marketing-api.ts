@@ -55,6 +55,15 @@ export async function createCoupon(data: {
   return res.json();
 }
 
+export async function sendCampaign(id: string): Promise<{ sent: number }> {
+  const res = await fetch(`${API_BASE}/api/v1/campaigns/${id}/send`, {
+    method: 'POST',
+    headers: headers(),
+  });
+  if (!res.ok) throw new Error(`Failed to send campaign (${res.status})`);
+  return res.json();
+}
+
 export async function generateProductDescription(productName: string, brief?: string) {
   const res = await fetch(`${API_BASE}/api/v1/ai/product-descriptions`, {
     method: 'POST',

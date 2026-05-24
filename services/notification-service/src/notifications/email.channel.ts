@@ -111,6 +111,44 @@ function renderOrderStatusUpdate(vars: Record<string, string>): {
   };
 }
 
+function renderAbandonedCart(vars: Record<string, string>): {
+  subject: string;
+  html: string;
+  text: string;
+} {
+  const recoveryUrl = vars.recoveryUrl ?? '/cart';
+  const subtotal = vars.subtotal ?? '';
+  const itemSummary = vars.itemSummary ?? 'items in your cart';
+  return {
+    subject: 'You left something behind — complete your order',
+    html: `<!DOCTYPE html><html><body style="font-family:sans-serif">
+      <h2>Your cart is waiting</h2>
+      <p>You still have ${itemSummary} saved (${subtotal}).</p>
+      <p><a href="${recoveryUrl}">Return to checkout</a></p>
+      <hr><p style="color:#666;font-size:12px">Nexora Commerce</p>
+    </body></html>`,
+    text: `Your cart (${subtotal}) is waiting. Complete your order: ${recoveryUrl}`,
+  };
+}
+
+function renderCampaign(vars: Record<string, string>): {
+  subject: string;
+  html: string;
+  text: string;
+} {
+  const subject = vars.subject ?? 'News from our store';
+  const body = vars.body ?? vars.message ?? 'Check out our latest offers.';
+  return {
+    subject,
+    html: `<!DOCTYPE html><html><body style="font-family:sans-serif">
+      <h2>${subject}</h2>
+      <p>${body}</p>
+      <hr><p style="color:#666;font-size:12px">Nexora Commerce</p>
+    </body></html>`,
+    text: `${subject}\n\n${body}`,
+  };
+}
+
 export function renderTemplate(
   templateId: string,
   variables: Record<string, string> = {},
@@ -120,6 +158,12 @@ export function renderTemplate(
   }
   if (templateId === 'order-status-update') {
     return renderOrderStatusUpdate(variables);
+  }
+  if (templateId === 'abandoned-cart') {
+    return renderAbandonedCart(variables);
+  }
+  if (templateId === 'campaign') {
+    return renderCampaign(variables);
   }
   const body = variables.body ?? `Notification: ${templateId}`;
   return {

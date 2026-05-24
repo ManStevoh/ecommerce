@@ -33,6 +33,11 @@ export class ProductsController {
     return this.productsService.decrementStock(dto.items);
   }
 
+  @Post('stock/increment')
+  incrementStock(@Body() dto: DecrementStockDto) {
+    return this.productsService.incrementStock(dto.items);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.productsService.findOne(id);

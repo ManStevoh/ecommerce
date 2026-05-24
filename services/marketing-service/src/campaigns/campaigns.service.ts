@@ -1,7 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Prisma } from '@nexora/database';
+import { CampaignStatus, Prisma } from '@nexora/database';
+import { NotificationServiceClient } from '@nexora/integrations';
 import { PrismaService } from '../database/prisma.service';
 import { TenantContextService } from '../common/tenant/tenant-context.service';
+import { SegmentsService } from '../segments/segments.service';
 import { CreateCampaignDto, UpdateCampaignDto } from './dto/create-campaign.dto';
 
 @Injectable()
@@ -9,6 +11,8 @@ export class CampaignsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly tenantContext: TenantContextService,
+    private readonly segmentsService: SegmentsService,
+    private readonly notificationClient: NotificationServiceClient,
   ) {}
 
   private tenantWhere() {
@@ -76,5 +80,54 @@ export class CampaignsService {
     await this.findOne(id);
     await this.prisma.campaign.delete({ where: { id } });
     return { deleted: true, id };
+  }
+
+  async send(id: string) {
+    const campaign = await this.findOne(id);
+    const tenantId = this.tenantContext.getTenantId();
+    const metadata = (campaign.metadata ?? {}) as Record<string, string>;
+
+    let recipients: { email: string }[] = [];
+    if (campaign.segmentId) {
+      const evaluation = await this.segmentsService.evaluate(campaign.segmentId);
+      recipients = evaluation.members.map((m) => ({ email: m.email }));
+    }
+
+    if (recipients.length === 0) {
+      return {
+        campaignId: id,
+        sent: 0,
+        message: 'No recipients — attach a segment and evaluate it first',
+      };
+    }
+
+    const subject = metadata.subject ?? campaign.name;
+    const body =
+      metadata.body ?? campaign.description ?? 'Thanks for being a customer.';
+
+    let sent = 0;
+    for (const recipient of recipients) {
+      await this.notificationClient.sendEmail(tenantId, {
+        to: recipient.email,
+        templateId: 'campaign',
+        variables: { subject, body },
+      });
+      sent += 1;
+    }
+
+    const existingMeta = (campaign.metadata ?? {}) as Record<string, unknown>;
+    await this.prisma.campaign.update({
+      where: { id },
+      data: {
+        status: CampaignStatus.COMPLETED,
+        metadata: {
+          ...existingMeta,
+          lastSentAt: new Date().toISOString(),
+          recipientsSent: sent,
+        } as Prisma.InputJsonValue,
+      },
+    });
+
+    return { campaignId: id, sent, subject };
   }
 }

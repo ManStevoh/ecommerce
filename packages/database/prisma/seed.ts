@@ -156,6 +156,24 @@ async function main() {
     },
   });
 
+  await prisma.campaign.upsert({
+    where: { id: 'seed-campaign-welcome' },
+    update: {},
+    create: {
+      id: 'seed-campaign-welcome',
+      tenantId: tenant.id,
+      name: 'Welcome back offer',
+      description: 'Email repeat buyers with a thank-you message',
+      status: 'DRAFT',
+      channel: 'email',
+      segmentId: 'seed-segment-repeat-buyers',
+      metadata: {
+        subject: 'Thanks for shopping with Fresh Fish!',
+        body: 'Enjoy 10% off your next order with code WELCOME10.',
+      },
+    },
+  });
+
   await prisma.subscription.upsert({
     where: { id: 'seed-sub-freshfish' },
     update: {},
@@ -180,6 +198,7 @@ async function main() {
   console.log('  Store owner:', demoOwner.email, '/ Admin123!');
   console.log('  Demo coupon: WELCOME10 (10% off, min KES 500)');
   console.log('  Demo segment: Repeat buyers (evaluate in Marketing → Segments)');
+  console.log('  Demo campaign: Welcome back offer (Marketing → Campaigns → Send now)');
 
   await indexProductsForSearch(tenant.id);
 }

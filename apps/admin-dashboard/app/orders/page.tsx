@@ -80,6 +80,11 @@ export default function OrdersPage() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['orders'] }),
   });
 
+  const cancelMutation = useMutation({
+    mutationFn: (orderId: string) => updateOrderStatus(orderId, 'CANCELLED'),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['orders'] }),
+  });
+
   const noTenant = !process.env.NEXT_PUBLIC_TENANT_ID;
 
   return (
@@ -203,6 +208,23 @@ export default function OrdersPage() {
                             onClick={() => confirmMutation.mutate(order.id)}
                           >
                             Confirm
+                          </Button>
+                        )}
+                        {['pending', 'confirmed', 'processing'].includes(
+                          order.status,
+                        ) && (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="text-zinc-600"
+                            disabled={cancelMutation.isPending}
+                            onClick={() => {
+                              if (confirm(`Cancel order ${order.orderNumber}?`)) {
+                                cancelMutation.mutate(order.id);
+                              }
+                            }}
+                          >
+                            Cancel
                           </Button>
                         )}
                         {['pending', 'confirmed', 'processing'].includes(

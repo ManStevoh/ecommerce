@@ -14,6 +14,7 @@
     "test": "turbo run test",
     "test:payments": "node scripts/test-payment-gateways.mjs",
     "test:payments:http": "node scripts/test-payment-gateways.mjs --http",
+    "test:platform": "node scripts/test-platform-features.mjs",
     "db:generate": "pnpm --filter @nexora/database db:generate",
     "db:migrate": "pnpm --filter @nexora/database db:migrate",
     "db:push": "pnpm --filter @nexora/database db:push",

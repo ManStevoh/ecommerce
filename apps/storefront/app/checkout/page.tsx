@@ -30,8 +30,10 @@ import {
   computeCheckoutTotals,
   validateCoupon,
   redeemCoupon,
+  upsertAbandonedCart,
   type PaymentMethod,
 } from '@/lib/api';
+import { StripePaymentForm } from '@/components/stripe-payment-form';
 
 const TENANT_ID = process.env.NEXT_PUBLIC_TENANT_ID ?? '';
 
@@ -59,6 +61,34 @@ export default function CheckoutPage() {
     redirectUrl?: string;
   } | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('mpesa');
+  const [stripeSession, setStripeSession] = useState<{
+    orderNumber: string;
+    clientSecret: string;
+    stub: boolean;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!TENANT_ID || items.length === 0) return;
+    const emailInput = document.querySelector<HTMLInputElement>('input[name="email"]');
+    const email = emailInput?.value?.trim();
+    if (!email || !email.includes('@')) return;
+
+    const timer = window.setTimeout(() => {
+      void upsertAbandonedCart(TENANT_ID, {
+        customerEmail: email,
+        items: items.map((item) => ({
+          productId: item.id,
+          name: item.name,
+          quantity: item.quantity,
+          unitPrice: item.price,
+        })),
+        subtotal,
+        currency: storeSettings?.currency ?? 'KES',
+      });
+    }, 1500);
+
+    return () => window.clearTimeout(timer);
+  }, [items, subtotal, storeSettings?.currency]);
 
   useEffect(() => {
     if (!TENANT_ID) return;
@@ -159,8 +189,18 @@ export default function CheckoutPage() {
           TENANT_ID,
           order.id,
           orderTotal,
-          'KES',
+          storeSettings?.currency ?? 'KES',
         );
+        const clientSecret = payResult.providerResult?.clientSecret;
+        const raw = payResult.providerResult?.raw as { stub?: boolean } | undefined;
+        if (clientSecret) {
+          setStripeSession({
+            orderNumber: order.orderNumber ?? order.id,
+            clientSecret,
+            stub: Boolean(raw?.stub) || clientSecret.includes('stub'),
+          });
+          return;
+        }
         paymentMessage = formatStripePaymentMessage(payResult);
       } else if (paymentMethod === 'paystack') {
         const payResult = await initiatePaystackPayment(
@@ -231,6 +271,32 @@ export default function CheckoutPage() {
     } finally {
       setLoading(false);
     }
+  }
+
+  if (stripeSession) {
+    return (
+      <div className="mx-auto max-w-lg space-y-6 py-8">
+        <h1 className="text-2xl font-semibold tracking-tight">Complete card payment</h1>
+        <p className="text-sm text-zinc-500">
+          Order <strong>{stripeSession.orderNumber}</strong>
+        </p>
+        {error && <p className="text-sm text-red-500">{error}</p>}
+        <StripePaymentForm
+          clientSecret={stripeSession.clientSecret}
+          orderNumber={stripeSession.orderNumber}
+          stub={stripeSession.stub}
+          onSuccess={() => {
+            clearCart();
+            setSuccess({
+              orderNumber: stripeSession.orderNumber,
+              paymentMessage: 'Card payment submitted successfully.',
+            });
+            setStripeSession(null);
+          }}
+          onError={(message) => setError(message)}
+        />
+      </div>
+    );
   }
 
   if (success) {

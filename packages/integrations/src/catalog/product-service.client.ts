@@ -75,6 +75,17 @@ export class ProductServiceClient {
       body: JSON.stringify({ items }),
     });
   }
+
+  async incrementStock(
+    tenantId: string,
+    items: { productId: string; quantity: number }[],
+  ): Promise<ProductRecord[]> {
+    return httpJson(`${this.baseUrl}/api/v1/products/stock/increment`, {
+      method: 'POST',
+      headers: this.headers(tenantId),
+      body: JSON.stringify({ items }),
+    });
+  }
 }
 
 export function createProductServiceClient(baseUrl?: string): ProductServiceClient {

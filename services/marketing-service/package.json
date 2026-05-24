@@ -12,6 +12,7 @@
   "dependencies": {
     "@nexora/database": "workspace:*",
     "@nexora/event-bus": "workspace:*",
+    "@nexora/integrations": "workspace:*",
     "@nexora/observability": "workspace:*",
     "@nexora/tenant-context": "workspace:*",
     "@nestjs/common": "^10.4.15",

@@ -29,6 +29,11 @@ export class CampaignsController {
     return this.campaignsService.findOne(id);
   }
 
+  @Post(':id/send')
+  send(@Param('id') id: string) {
+    return this.campaignsService.send(id);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() dto: UpdateCampaignDto) {
     return this.campaignsService.update(id, dto);

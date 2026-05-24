@@ -48,6 +48,7 @@ export const PROXY_ROUTES: ProxyRoute[] = [
   { prefix: '/api/v1/returns', targetEnvKey: 'order', stripPrefix: false },
   { prefix: '/api/v1/invoices', targetEnvKey: 'order', stripPrefix: false },
   { prefix: '/api/v1/cart-conversion', targetEnvKey: 'order', stripPrefix: false },
+  { prefix: '/api/v1/abandoned-carts', targetEnvKey: 'order', stripPrefix: false },
   { prefix: '/api/v1/payments', targetEnvKey: 'payment', stripPrefix: false },
   { prefix: '/api/v1/providers', targetEnvKey: 'payment', stripPrefix: false },
   { prefix: '/api/v1/webhooks', targetEnvKey: 'payment', stripPrefix: false },

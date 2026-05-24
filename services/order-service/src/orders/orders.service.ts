@@ -7,6 +7,10 @@ import { TenantContextService } from '../common/tenant/tenant-context.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
 import { assertValidStatusTransition } from './order-status.workflow';
+import {
+  InventoryRestoreService,
+  shouldRestoreStock,
+} from '../inventory/inventory-restore.service';
 
 @Injectable()
 export class OrdersService {
@@ -15,6 +19,7 @@ export class OrdersService {
     private readonly tenantContext: TenantContextService,
     private readonly eventBus: EventBusService,
     private readonly productClient: ProductServiceClient,
+    private readonly inventoryRestore: InventoryRestoreService,
   ) {}
 
   private tenantWhere() {
@@ -76,6 +81,17 @@ export class OrdersService {
       include: { items: true },
     });
 
+    void this.prisma.abandonedCart
+      .updateMany({
+        where: {
+          tenantId,
+          customerEmail: dto.customerEmail,
+          convertedAt: null,
+        },
+        data: { convertedAt: new Date() },
+      })
+      .catch(() => undefined);
+
     void this.eventBus.publish(
       EventTopics.ORDER_CREATED,
       {
@@ -119,6 +135,10 @@ export class OrdersService {
       data: { status: dto.status, statusReason: dto.reason },
       include: { items: true },
     });
+
+    if (shouldRestoreStock(order.status, dto.status)) {
+      await this.inventoryRestore.restoreForOrder(id);
+    }
 
     void this.eventBus.publish(
       EventTopics.ORDER_STATUS_CHANGED,

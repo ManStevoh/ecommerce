@@ -31,3 +31,9 @@ export {
   createSubscriptionServiceClient,
   type PlatformSubscriptionStats,
 } from './subscriptions/subscription-service.client';
+export {
+  NotificationServiceClient,
+  createNotificationServiceClient,
+  type SendNotificationInput,
+  type SendNotificationResult,
+} from './notifications/notification-service.client';
