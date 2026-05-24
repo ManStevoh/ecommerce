@@ -25,10 +25,10 @@ export class InventoryService {
           warehouseId: dto.warehouseId,
         },
       },
-      create: { ...dto, tenantId },
+      create: { ...dto, tenantId, quantityReserved: dto.quantityReserved ?? 0 },
       update: {
         quantityOnHand: dto.quantityOnHand,
-        quantityReserved: dto.quantityReserved,
+        quantityReserved: dto.quantityReserved ?? 0,
       },
     });
   }

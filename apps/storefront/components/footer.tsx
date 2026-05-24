@@ -1,12 +1,25 @@
 import Link from "next/link";
 import { Sparkles } from "lucide-react";
+import type { LayoutVariant } from "@nexora/themes";
 
-export function Footer({ tenantName }: { tenantName: string }) {
+export function Footer({
+  tenantName,
+  variant = "classic",
+}: {
+  tenantName: string;
+  variant?: LayoutVariant;
+}) {
   const year = new Date().getFullYear();
+  const widthClass =
+    variant === "minimal"
+      ? "max-w-5xl"
+      : variant === "editorial"
+        ? "max-w-6xl"
+        : "max-w-7xl";
 
   return (
     <footer className="mt-20 border-t border-zinc-200/60 bg-white/50 dark:border-zinc-800/60 dark:bg-zinc-950/50">
-      <div className="mx-auto grid max-w-7xl gap-10 px-6 py-12 md:grid-cols-4">
+      <div className={`mx-auto grid ${widthClass} gap-10 px-6 py-12 md:grid-cols-4`}>
         <div className="md:col-span-2">
           <div className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-amber-500" />

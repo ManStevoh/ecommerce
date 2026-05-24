@@ -27,6 +27,7 @@ export function ProductVariantsSection({ productId }: Props) {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [stockDraft, setStockDraft] = useState<Record<string, string>>({});
 
   async function onAdd(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -62,6 +63,37 @@ export function ProductVariantsSection({ productId }: Props) {
     }
   }
 
+  async function onSaveStock(variantId: string) {
+    const warehouseId = warehouses[0]?.id;
+    if (!warehouseId) {
+      setError('No warehouse available for stock updates.');
+      return;
+    }
+
+    const raw = stockDraft[variantId];
+    const quantityOnHand = parseInt(raw ?? '', 10);
+    if (Number.isNaN(quantityOnHand) || quantityOnHand < 0) {
+      setError('Enter a valid stock quantity.');
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    try {
+      await upsertVariantInventory({ variantId, warehouseId, quantityOnHand });
+      await queryClient.invalidateQueries({ queryKey: ['variants', productId] });
+      setStockDraft((prev) => {
+        const next = { ...prev };
+        delete next[variantId];
+        return next;
+      });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update stock');
+    } finally {
+      setLoading(false);
+    }
+  }
+
   async function onDelete(id: string) {
     if (!confirm('Delete this variant?')) return;
     setLoading(true);
@@ -89,26 +121,53 @@ export function ProductVariantsSection({ productId }: Props) {
         ) : (
           <ul className="divide-y rounded-md border">
             {variants.map((variant) => (
-              <li
-                key={variant.id}
-                className="flex items-center justify-between gap-3 px-3 py-2 text-sm"
-              >
-                <div>
-                  <p className="font-medium">{variant.name ?? variant.sku}</p>
-                  <p className="text-zinc-500">
-                    {variant.sku} · {Number(variant.price).toLocaleString()} · stock{' '}
-                    {variant.stockQuantity ?? 0}
-                  </p>
+              <li key={variant.id} className="space-y-2 px-3 py-3 text-sm">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="font-medium">{variant.name ?? variant.sku}</p>
+                    <p className="text-zinc-500">
+                      {variant.sku} · {Number(variant.price).toLocaleString()}
+                    </p>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    disabled={loading}
+                    onClick={() => onDelete(variant.id)}
+                  >
+                    Delete
+                  </Button>
                 </div>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  disabled={loading}
-                  onClick={() => onDelete(variant.id)}
-                >
-                  Delete
-                </Button>
+                <div className="flex items-end gap-2">
+                  <div className="flex-1">
+                    <label className="mb-1 block text-xs text-zinc-500">
+                      Stock ({warehouses[0]?.code ?? 'warehouse'})
+                    </label>
+                    <Input
+                      type="number"
+                      min={0}
+                      value={
+                        stockDraft[variant.id] ??
+                        String(variant.stockQuantity ?? 0)
+                      }
+                      onChange={(e) =>
+                        setStockDraft((prev) => ({
+                          ...prev,
+                          [variant.id]: e.target.value,
+                        }))
+                      }
+                    />
+                  </div>
+                  <Button
+                    type="button"
+                    size="sm"
+                    disabled={loading || warehouses.length === 0}
+                    onClick={() => onSaveStock(variant.id)}
+                  >
+                    Save stock
+                  </Button>
+                </div>
               </li>
             ))}
           </ul>

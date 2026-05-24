@@ -14,15 +14,19 @@ import {
   Textarea,
 } from "@nexora/ui";
 import {
+  fetchLayoutVariants,
   fetchThemePresets,
   fetchThemeSettings,
   updateThemeSettings,
+  type LayoutVariantSummary,
   type ThemePresetSummary,
 } from "@/lib/settings-api";
 
 export default function BrandingPage() {
   const [presets, setPresets] = useState<ThemePresetSummary[]>([]);
+  const [layouts, setLayouts] = useState<LayoutVariantSummary[]>([]);
   const [selectedPreset, setSelectedPreset] = useState("luxury");
+  const [layoutVariant, setLayoutVariant] = useState("classic");
   const [primaryColor, setPrimaryColor] = useState("#0f172a");
   const [secondaryColor, setSecondaryColor] = useState("#64748b");
   const [accentColor, setAccentColor] = useState("#3b82f6");
@@ -37,13 +41,16 @@ export default function BrandingPage() {
 
   useEffect(() => {
     async function load() {
-      const [theme, presetList] = await Promise.all([
+      const [theme, presetList, layoutList] = await Promise.all([
         fetchThemeSettings(),
         fetchThemePresets(),
+        fetchLayoutVariants(),
       ]);
       setPresets(presetList);
+      setLayouts(layoutList);
       if (theme) {
         setSelectedPreset(theme.themePreset ?? "luxury");
+        setLayoutVariant(theme.layoutVariant ?? "classic");
         setPrimaryColor(theme.primaryColor);
         setSecondaryColor(theme.secondaryColor);
         setAccentColor(theme.accentColor);
@@ -66,6 +73,9 @@ export default function BrandingPage() {
     setSecondaryColor(preset.secondaryColor);
     setAccentColor(preset.accentColor);
     setDarkMode(preset.darkMode);
+    if (preset.defaultLayoutVariant) {
+      setLayoutVariant(preset.defaultLayoutVariant);
+    }
   }
 
   async function handleSave() {
@@ -74,6 +84,7 @@ export default function BrandingPage() {
     try {
       await updateThemeSettings({
         themePreset: selectedPreset,
+        layoutVariant,
         primaryColor,
         secondaryColor,
         accentColor,
@@ -137,6 +148,31 @@ export default function BrandingPage() {
               ))}
             </div>
           )}
+        </CardContent>
+      </Card>
+
+      <Card className="mb-6 border-zinc-200/80 bg-white shadow-sm">
+        <CardHeader>
+          <CardTitle>Storefront layout</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-3 sm:grid-cols-3">
+            {layouts.map((layout) => (
+              <button
+                key={layout.slug}
+                type="button"
+                onClick={() => setLayoutVariant(layout.slug)}
+                className={`rounded-xl border p-4 text-left transition ${
+                  layoutVariant === layout.slug
+                    ? "border-indigo-500 ring-2 ring-indigo-200"
+                    : "border-zinc-200 hover:border-zinc-300"
+                }`}
+              >
+                <p className="font-medium text-zinc-900">{layout.name}</p>
+                <p className="mt-1 text-xs text-zinc-500">{layout.description}</p>
+              </button>
+            ))}
+          </div>
         </CardContent>
       </Card>
 

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ShoppingBag, Sparkles } from "lucide-react";
 import { Badge } from "@nexora/ui";
+import type { LayoutVariant } from "@nexora/themes";
 import { ThemeToggle } from "./theme-toggle";
 import { AiSearchBar } from "./ai-search-bar";
 import { MobileNav } from "./mobile-nav";
@@ -11,15 +12,24 @@ import { useCartCount } from "@/store/cart";
 export function Header({
   tenantName,
   logoUrl,
+  variant = "classic",
 }: {
   tenantName: string;
   logoUrl?: string | null;
+  variant?: LayoutVariant;
 }) {
   const cartCount = useCartCount();
+  const widthClass =
+    variant === "minimal"
+      ? "max-w-5xl"
+      : variant === "editorial"
+        ? "max-w-6xl"
+        : "max-w-7xl";
+  const paddingClass = variant === "minimal" ? "py-2" : "py-4";
 
   return (
     <header className="sticky top-0 z-50 border-b border-zinc-200/50 bg-white/70 backdrop-blur-2xl dark:border-zinc-800/50 dark:bg-zinc-950/70">
-      <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-4 lg:flex-row lg:items-center lg:justify-between">
+      <div className={`mx-auto flex ${widthClass} flex-col gap-4 px-6 ${paddingClass} lg:flex-row lg:items-center lg:justify-between`}>
         <div className="flex items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-2">
             {logoUrl ? (

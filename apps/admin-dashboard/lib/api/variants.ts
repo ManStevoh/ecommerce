@@ -78,6 +78,20 @@ export async function upsertVariantInventory(data: {
   if (!res.ok) throw new Error(`Failed to update inventory (${res.status})`);
 }
 
+export async function fetchVariantInventory(
+  variantId: string,
+): Promise<
+  { id: string; warehouseId: string; quantityOnHand: number; quantityReserved: number }[]
+> {
+  const res = await fetch(
+    `${API_BASE}/api/v1/inventory?variantId=${variantId}`,
+    { headers: apiHeaders(), cache: 'no-store' },
+  );
+  if (!res.ok) return [];
+  const data = await res.json();
+  return Array.isArray(data) ? data : [];
+}
+
 export async function fetchWarehouses(): Promise<
   { id: string; name: string; code: string }[]
 > {

@@ -1,3 +1,5 @@
+export type LayoutVariant = 'classic' | 'editorial' | 'minimal';
+
 export type ThemePresetSlug =
   | 'luxury'
   | 'ocean'
@@ -34,6 +36,7 @@ export type ThemePreset = {
 
 export type ThemeSettingsInput = {
   themePreset?: string | null;
+  layoutVariant?: string | null;
   primaryColor?: string;
   secondaryColor?: string;
   accentColor?: string;
@@ -46,5 +49,6 @@ export type ThemeSettingsInput = {
 
 export type ResolvedTheme = ThemeSettingsInput & {
   themePreset: ThemePresetSlug;
+  layoutVariant: LayoutVariant;
   cssVars: Record<string, string>;
 };

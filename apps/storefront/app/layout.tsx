@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import "./globals.css";
+import { resolveTheme } from "@nexora/themes";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { QueryProvider } from "@/providers/query-provider";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { TenantBranding } from "@/components/tenant-branding";
 import { ThemeFontLink } from "@/components/theme-font-link";
+import { LayoutShell } from "@/components/layouts/layout-shell";
 import { getTenantFromHeaders } from "@/lib/tenant";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -24,6 +24,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const tenant = await getTenantFromHeaders();
+  const resolved = resolveTheme(tenant.theme);
 
   return (
     <html
@@ -38,9 +39,13 @@ export default async function RootLayout({
         <ThemeProvider defaultTheme={tenant.theme.darkMode ? "dark" : "system"}>
           <QueryProvider>
             <TenantBranding theme={tenant.theme}>
-              <Header tenantName={tenant.displayName} logoUrl={tenant.theme.logoUrl} />
-              <main className="mx-auto max-w-7xl px-6 py-8">{children}</main>
-              <Footer tenantName={tenant.displayName} />
+              <LayoutShell
+                layoutVariant={resolved.layoutVariant}
+                tenantName={tenant.displayName}
+                logoUrl={tenant.theme.logoUrl}
+              >
+                {children}
+              </LayoutShell>
             </TenantBranding>
           </QueryProvider>
         </ThemeProvider>

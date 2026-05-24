@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { THEME_PRESETS, applyThemePreset } from '@nexora/themes';
+import { LAYOUT_VARIANTS, PRESET_LAYOUT_VARIANTS, THEME_PRESETS, applyThemePreset } from '@nexora/themes';
 import { PrismaService } from '../prisma/prisma.service';
 import { UpdateThemeSettingsDto } from './dto/update-theme-settings.dto';
 
@@ -24,7 +24,12 @@ export class ThemeSettingsService {
       secondaryColor,
       accentColor,
       darkMode,
+      defaultLayoutVariant: PRESET_LAYOUT_VARIANTS[slug],
     }));
+  }
+
+  listLayoutVariants() {
+    return LAYOUT_VARIANTS;
   }
 
   async update(tenantId: string, dto: UpdateThemeSettingsDto) {
@@ -45,6 +50,7 @@ export class ThemeSettingsService {
     const data = {
       ...raw,
       themePreset: raw.themePreset ?? undefined,
+      layoutVariant: raw.layoutVariant ?? undefined,
       logoUrl: raw.logoUrl ?? undefined,
       faviconUrl: raw.faviconUrl ?? undefined,
       customCss: raw.customCss ?? undefined,

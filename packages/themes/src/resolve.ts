@@ -1,9 +1,11 @@
+import { PRESET_LAYOUT_VARIANTS, resolveLayoutVariant } from './layouts';
 import { getThemePreset, isThemePresetSlug } from './presets';
 import type { ResolvedTheme, ThemePreset, ThemeSettingsInput } from './types';
 
 function presetToSettings(preset: ThemePreset): ThemeSettingsInput {
   return {
     themePreset: preset.slug,
+    layoutVariant: PRESET_LAYOUT_VARIANTS[preset.slug],
     primaryColor: preset.primaryColor,
     secondaryColor: preset.secondaryColor,
     accentColor: preset.accentColor,
@@ -48,6 +50,10 @@ export function resolveTheme(settings: ThemeSettingsInput): ResolvedTheme {
 
   return {
     themePreset: preset.slug,
+    layoutVariant: resolveLayoutVariant(
+      preset.slug,
+      settings.layoutVariant,
+    ),
     primaryColor: settings.primaryColor ?? preset.primaryColor,
     secondaryColor: settings.secondaryColor ?? preset.secondaryColor,
     accentColor: settings.accentColor ?? preset.accentColor,

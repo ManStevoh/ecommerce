@@ -4,6 +4,11 @@ export class UpdateThemeSettingsDto {
   @IsOptional()
   @IsString()
   @MaxLength(50)
+  layoutVariant?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
   themePreset?: string;
 
   @IsOptional()

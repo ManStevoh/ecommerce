@@ -14,6 +14,7 @@ import { ReturnsModule } from './returns/returns.module';
 import { RefundsModule } from './refunds/refunds.module';
 import { CartConversionModule } from './cart-conversion/cart-conversion.module';
 import { PaymentEventsModule } from './events/payment-events.module';
+import { OutboxModule } from './events/outbox.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { PaymentEventsModule } from './events/payment-events.module';
     CartConversionModule,
     AbandonedCartsModule,
     PaymentEventsModule,
+    OutboxModule,
   ],
 })
 export class AppModule {}

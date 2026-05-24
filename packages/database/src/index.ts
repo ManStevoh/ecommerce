@@ -20,3 +20,6 @@ if (process.env.NODE_ENV !== 'production') {
 export * from '@prisma/client';
 export { PrismaClient };
 export { Role as UserRole } from '@prisma/client';
+export { enqueueOutbox } from './outbox';
+export { SCHEMA_DOMAINS, serviceForModel } from './schema-domains';
+export type { SchemaDomain } from './schema-domains';

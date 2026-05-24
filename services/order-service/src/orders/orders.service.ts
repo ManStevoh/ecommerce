@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { OrderStatus, Prisma } from '@nexora/database';
-import { EventBusService, EventTopics } from '@nexora/event-bus';
+import { OrderStatus, Prisma, enqueueOutbox } from '@nexora/database';
+import { EventTopics } from '@nexora/event-bus';
 import { ProductServiceClient } from '@nexora/integrations';
 import { PrismaService } from '../database/prisma.service';
 import { TenantContextService } from '../common/tenant/tenant-context.service';
@@ -17,7 +17,6 @@ export class OrdersService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly tenantContext: TenantContextService,
-    private readonly eventBus: EventBusService,
     private readonly productClient: ProductServiceClient,
     private readonly inventoryRestore: InventoryRestoreService,
   ) {}
@@ -50,37 +49,52 @@ export class OrdersService {
       })),
     );
 
-    const order = await this.prisma.order.create({
-      data: {
-        tenantId,
-        userId: dto.userId,
-        customerEmail: dto.customerEmail,
-        orderNumber: this.generateOrderNumber(),
-        currency: dto.currency ?? 'USD',
-        notes: dto.notes,
-        status: OrderStatus.PENDING,
-        subtotal,
-        taxAmount,
-        shippingAmount,
-        discountAmount,
-        totalAmount,
-        shippingAddress: (dto.shippingAddress ?? {}) as Prisma.InputJsonValue,
-        billingAddress: (dto.billingAddress ??
-          dto.shippingAddress ??
-          {}) as Prisma.InputJsonValue,
-        items: {
-          create: dto.items.map((item) => ({
-            productId: item.productId,
-            variantId: item.variantId,
-            sku: item.sku ?? item.productId.slice(0, 8),
-            name: item.name,
-            quantity: item.quantity,
-            unitPrice: item.unitPrice,
-            totalPrice: item.unitPrice * item.quantity,
-          })),
+    const order = await this.prisma.$transaction(async (tx) => {
+      const created = await tx.order.create({
+        data: {
+          tenantId,
+          userId: dto.userId,
+          customerEmail: dto.customerEmail,
+          orderNumber: this.generateOrderNumber(),
+          currency: dto.currency ?? 'USD',
+          notes: dto.notes,
+          status: OrderStatus.PENDING,
+          subtotal,
+          taxAmount,
+          shippingAmount,
+          discountAmount,
+          totalAmount,
+          shippingAddress: (dto.shippingAddress ?? {}) as Prisma.InputJsonValue,
+          billingAddress: (dto.billingAddress ??
+            dto.shippingAddress ??
+            {}) as Prisma.InputJsonValue,
+          items: {
+            create: dto.items.map((item) => ({
+              productId: item.productId,
+              variantId: item.variantId,
+              sku: item.sku ?? item.productId.slice(0, 8),
+              name: item.name,
+              quantity: item.quantity,
+              unitPrice: item.unitPrice,
+              totalPrice: item.unitPrice * item.quantity,
+            })),
+          },
         },
-      },
-      include: { items: true },
+        include: { items: true },
+      });
+
+      await enqueueOutbox(tx, {
+        tenantId,
+        topic: EventTopics.ORDER_CREATED,
+        payload: {
+          orderId: created.id,
+          orderNumber: created.orderNumber,
+          customerEmail: created.customerEmail,
+          totalAmount: Number(created.totalAmount),
+        },
+      });
+
+      return created;
     });
 
     void this.prisma.abandonedCart
@@ -93,17 +107,6 @@ export class OrdersService {
         data: { convertedAt: new Date() },
       })
       .catch(() => undefined);
-
-    void this.eventBus.publish(
-      EventTopics.ORDER_CREATED,
-      {
-        orderId: order.id,
-        orderNumber: order.orderNumber,
-        customerEmail: order.customerEmail,
-        totalAmount: Number(order.totalAmount),
-      },
-      { tenantId },
-    );
 
     return order;
   }
@@ -132,28 +135,32 @@ export class OrdersService {
     if (!order) throw new NotFoundException(`Order ${id} not found`);
 
     assertValidStatusTransition(order.status, dto.status);
-    const updated = await this.prisma.order.update({
-      where: { id },
-      data: { status: dto.status, statusReason: dto.reason },
-      include: { items: true },
+    const updated = await this.prisma.$transaction(async (tx) => {
+      const next = await tx.order.update({
+        where: { id },
+        data: { status: dto.status, statusReason: dto.reason },
+        include: { items: true },
+      });
+
+      await enqueueOutbox(tx, {
+        tenantId: order.tenantId,
+        topic: EventTopics.ORDER_STATUS_CHANGED,
+        payload: {
+          orderId: next.id,
+          orderNumber: next.orderNumber,
+          customerEmail: next.customerEmail,
+          fromStatus: order.status,
+          toStatus: dto.status,
+          reason: dto.reason,
+        },
+      });
+
+      return next;
     });
 
     if (shouldRestoreStock(order.status, dto.status)) {
       await this.inventoryRestore.restoreForOrder(id);
     }
-
-    void this.eventBus.publish(
-      EventTopics.ORDER_STATUS_CHANGED,
-      {
-        orderId: updated.id,
-        orderNumber: updated.orderNumber,
-        customerEmail: updated.customerEmail,
-        fromStatus: order.status,
-        toStatus: dto.status,
-        reason: dto.reason,
-      },
-      { tenantId: order.tenantId },
-    );
 
     return updated;
   }

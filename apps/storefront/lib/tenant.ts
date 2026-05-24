@@ -6,6 +6,7 @@ const TENANT_SUBDOMAIN =
 
 export type TenantTheme = {
   themePreset?: string | null;
+  layoutVariant?: string | null;
   primaryColor: string;
   secondaryColor: string;
   accentColor: string;

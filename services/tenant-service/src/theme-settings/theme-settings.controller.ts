@@ -13,6 +13,11 @@ export class ThemeSettingsController {
     return this.themeSettingsService.listPresets();
   }
 
+  @Get('layouts')
+  listLayouts() {
+    return this.themeSettingsService.listLayoutVariants();
+  }
+
   @Get()
   get(@CurrentTenant() tenant: TenantContext) {
     return this.themeSettingsService.get(tenant.tenantId);

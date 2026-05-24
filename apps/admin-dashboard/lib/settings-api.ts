@@ -28,6 +28,7 @@ export type ThemeSettings = {
   id: string;
   tenantId: string;
   themePreset: string;
+  layoutVariant?: string;
   primaryColor: string;
   secondaryColor: string;
   accentColor: string;
@@ -46,10 +47,26 @@ export type ThemePresetSummary = {
   secondaryColor: string;
   accentColor: string;
   darkMode: boolean;
+  defaultLayoutVariant?: string;
+};
+
+export type LayoutVariantSummary = {
+  slug: string;
+  name: string;
+  description: string;
 };
 
 export async function fetchThemePresets(): Promise<ThemePresetSummary[]> {
   const res = await fetch(`${API_BASE}/api/v1/theme-settings/presets`, {
+    headers: headers(),
+    cache: 'no-store',
+  });
+  if (!res.ok) return [];
+  return res.json();
+}
+
+export async function fetchLayoutVariants(): Promise<LayoutVariantSummary[]> {
+  const res = await fetch(`${API_BASE}/api/v1/theme-settings/layouts`, {
     headers: headers(),
     cache: 'no-store',
   });
@@ -124,6 +141,7 @@ export async function updateThemeSettings(
     Pick<
       ThemeSettings,
       | 'themePreset'
+      | 'layoutVariant'
       | 'primaryColor'
       | 'secondaryColor'
       | 'accentColor'
