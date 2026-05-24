@@ -45,6 +45,7 @@ export class OrdersService {
       tenantId,
       dto.items.map((item) => ({
         productId: item.productId,
+        variantId: item.variantId,
         quantity: item.quantity,
       })),
     );
@@ -70,6 +71,7 @@ export class OrdersService {
         items: {
           create: dto.items.map((item) => ({
             productId: item.productId,
+            variantId: item.variantId,
             sku: item.sku ?? item.productId.slice(0, 8),
             name: item.name,
             quantity: item.quantity,

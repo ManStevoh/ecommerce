@@ -3,6 +3,7 @@ import {
   ArrayMinSize,
   IsArray,
   IsInt,
+  IsOptional,
   IsString,
   Min,
   ValidateNested,
@@ -11,6 +12,10 @@ import {
 export class StockItemDto {
   @IsString()
   productId!: string;
+
+  @IsOptional()
+  @IsString()
+  variantId?: string;
 
   @IsInt()
   @Min(1)

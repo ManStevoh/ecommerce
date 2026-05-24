@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { Button, Card, CardContent, CardHeader, CardTitle, Input } from '@nexora/ui';
 import { fetchProductById, updateProduct } from '@/lib/api';
+import { ProductVariantsSection } from '@/components/product-variants-section';
 
 export default function EditProductPage() {
   const router = useRouter();
@@ -111,6 +112,7 @@ export default function EditProductPage() {
           </form>
         </CardContent>
       </Card>
+      <ProductVariantsSection productId={id} />
     </div>
   );
 }

@@ -40,6 +40,7 @@ export const PROXY_ROUTES: ProxyRoute[] = [
   { prefix: '/api/v1/attributes', targetEnvKey: 'catalog', stripPrefix: false },
   { prefix: '/api/v1/variants', targetEnvKey: 'catalog', stripPrefix: false },
   { prefix: '/api/v1/inventory', targetEnvKey: 'catalog', stripPrefix: false },
+  { prefix: '/api/v1/warehouses', targetEnvKey: 'catalog', stripPrefix: false },
   { prefix: '/api/v1/reviews', targetEnvKey: 'catalog', stripPrefix: false },
   { prefix: '/api/v1/wishlist', targetEnvKey: 'catalog', stripPrefix: false },
   { prefix: '/api/v1/orders', targetEnvKey: 'order', stripPrefix: false },

@@ -24,6 +24,11 @@ export class CampaignsController {
     return this.campaignsService.findAll();
   }
 
+  @Post('process-scheduled')
+  processScheduled() {
+    return this.campaignsService.processAllScheduled();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.campaignsService.findOne(id);

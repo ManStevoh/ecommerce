@@ -61,6 +61,7 @@ export type ProductVariant = {
   name: string | null;
   price: number | string;
   attributeValues?: Record<string, string | number | boolean> | null;
+  stockQuantity?: number;
 };
 
 export function getVariantPrice(variant: ProductVariant): number {

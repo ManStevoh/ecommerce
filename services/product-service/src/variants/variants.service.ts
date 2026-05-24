@@ -27,9 +27,26 @@ export class VariantsService {
   }
 
   async findByProduct(productId: string) {
-    return this.prisma.productVariant.findMany({
+    const variants = await this.prisma.productVariant.findMany({
       where: { productId, ...this.tenantWhere() },
+      include: { inventoryLevels: true },
     });
+
+    return variants.map((variant) => ({
+      id: variant.id,
+      tenantId: variant.tenantId,
+      productId: variant.productId,
+      sku: variant.sku,
+      name: variant.name,
+      price: variant.price,
+      attributeValues: variant.attributeValues,
+      weightGrams: variant.weightGrams,
+      stockQuantity: variant.inventoryLevels.reduce(
+        (sum, level) =>
+          sum + level.quantityOnHand - level.quantityReserved,
+        0,
+      ),
+    }));
   }
 
   async findOne(id: string) {

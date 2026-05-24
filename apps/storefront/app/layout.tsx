@@ -1,19 +1,13 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { QueryProvider } from "@/providers/query-provider";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { TenantBranding } from "@/components/tenant-branding";
+import { ThemeFontLink } from "@/components/theme-font-link";
 import { getTenantFromHeaders } from "@/lib/tenant";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
 
 export async function generateMetadata(): Promise<Metadata> {
   const tenant = await getTenantFromHeaders();
@@ -37,7 +31,10 @@ export default async function RootLayout({
       suppressHydrationWarning
       className={tenant.theme.darkMode ? "dark" : undefined}
     >
-      <body className={`${inter.variable} font-sans`}>
+      <head>
+        <ThemeFontLink fontFamily={tenant.theme.fontFamily} />
+      </head>
+      <body className="font-sans antialiased">
         <ThemeProvider defaultTheme={tenant.theme.darkMode ? "dark" : "system"}>
           <QueryProvider>
             <TenantBranding theme={tenant.theme}>

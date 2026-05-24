@@ -67,7 +67,7 @@ export class ProductServiceClient {
 
   async decrementStock(
     tenantId: string,
-    items: { productId: string; quantity: number }[],
+    items: { productId: string; variantId?: string; quantity: number }[],
   ): Promise<ProductRecord[]> {
     return httpJson(`${this.baseUrl}/api/v1/products/stock/decrement`, {
       method: 'POST',
@@ -78,7 +78,7 @@ export class ProductServiceClient {
 
   async incrementStock(
     tenantId: string,
-    items: { productId: string; quantity: number }[],
+    items: { productId: string; variantId?: string; quantity: number }[],
   ): Promise<ProductRecord[]> {
     return httpJson(`${this.baseUrl}/api/v1/products/stock/increment`, {
       method: 'POST',

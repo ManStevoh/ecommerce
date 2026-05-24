@@ -11,10 +11,17 @@ export function shouldRestoreStock(
   if (toStatus === OrderStatus.CANCELLED) {
     return fromStatus !== OrderStatus.CANCELLED;
   }
+  if (toStatus === OrderStatus.RETURNED) {
+    return (
+      fromStatus === OrderStatus.SHIPPED ||
+      fromStatus === OrderStatus.DELIVERED
+    );
+  }
   if (toStatus === OrderStatus.REFUNDED) {
     return (
       fromStatus !== OrderStatus.CANCELLED &&
-      fromStatus !== OrderStatus.REFUNDED
+      fromStatus !== OrderStatus.REFUNDED &&
+      fromStatus !== OrderStatus.RETURNED
     );
   }
   return false;
@@ -40,6 +47,7 @@ export class InventoryRestoreService {
       tenantId,
       order.items.map((item) => ({
         productId: item.productId,
+        variantId: item.variantId ?? undefined,
         quantity: item.quantity,
       })),
     );

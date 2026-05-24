@@ -17,6 +17,7 @@
     "test:platform": "node scripts/test-platform-features.mjs",
     "test:themes": "node scripts/test-themes.mjs",
     "test:variants": "node scripts/test-variants.mjs",
+    "test:pending": "node scripts/test-pending-features.mjs",
     "db:generate": "pnpm --filter @nexora/database db:generate",
     "db:migrate": "pnpm --filter @nexora/database db:migrate",
     "db:push": "pnpm --filter @nexora/database db:push",

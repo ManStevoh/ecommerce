@@ -441,6 +441,7 @@ model OrderItem {
   id         String  @id @default(cuid())
   orderId    String  @map("order_id")
   productId  String  @map("product_id")
+  variantId  String? @map("variant_id")
   sku        String
   name       String
   quantity   Int

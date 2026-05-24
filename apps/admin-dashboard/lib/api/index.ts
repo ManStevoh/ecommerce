@@ -7,3 +7,4 @@ export * from './marketing';
 export * from './media';
 export * from './reviews';
 export * from './dashboard';
+export * from './variants';

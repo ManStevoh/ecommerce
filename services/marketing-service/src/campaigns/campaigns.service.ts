@@ -130,4 +130,24 @@ export class CampaignsService {
 
     return { campaignId: id, sent, subject };
   }
+
+  async processAllScheduled() {
+    const now = new Date();
+    const due = await this.prisma.campaign.findMany({
+      where: {
+        status: CampaignStatus.SCHEDULED,
+        startsAt: { lte: now },
+      },
+      orderBy: { startsAt: 'asc' },
+    });
+
+    let sent = 0;
+    for (const campaign of due) {
+      this.tenantContext.setTenantId(campaign.tenantId);
+      const result = await this.send(campaign.id);
+      sent += result.sent ?? 0;
+    }
+
+    return { processed: due.length, sent };
+  }
 }

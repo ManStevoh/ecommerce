@@ -83,6 +83,43 @@ async function main() {
     data: { tenantId: tenant.id },
   });
 
+  const warehouse = await prisma.warehouse.upsert({
+    where: { tenantId_code: { tenantId: tenant.id, code: 'MAIN' } },
+    update: {},
+    create: {
+      tenantId: tenant.id,
+      name: 'Main warehouse',
+      code: 'MAIN',
+    },
+  });
+
+  async function seedVariantInventory(
+    sku: string,
+    quantityOnHand: number,
+  ) {
+    const variant = await prisma.productVariant.findFirst({
+      where: { tenantId: tenant.id, sku },
+    });
+    if (!variant) return;
+
+    await prisma.inventoryLevel.upsert({
+      where: {
+        tenantId_variantId_warehouseId: {
+          tenantId: tenant.id,
+          variantId: variant.id,
+          warehouseId: warehouse.id,
+        },
+      },
+      update: { quantityOnHand },
+      create: {
+        tenantId: tenant.id,
+        variantId: variant.id,
+        warehouseId: warehouse.id,
+        quantityOnHand,
+      },
+    });
+  }
+
   const products = [
     {
       sku: 'SALMON-001',
@@ -176,6 +213,18 @@ async function main() {
     }
   }
 
+  const variantStock: Record<string, number> = {
+    'SALMON-S': 25,
+    'SALMON-M': 40,
+    'SALMON-L': 15,
+    'PRAWN-250': 30,
+    'PRAWN-500': 50,
+    'PRAWN-1KG': 20,
+  };
+  for (const [sku, qty] of Object.entries(variantStock)) {
+    await seedVariantInventory(sku, qty);
+  }
+
   const periodEnd = new Date();
   periodEnd.setMonth(periodEnd.getMonth() + 1);
 
@@ -226,6 +275,25 @@ async function main() {
     },
   });
 
+  await prisma.campaign.upsert({
+    where: { id: 'seed-campaign-scheduled' },
+    update: {},
+    create: {
+      id: 'seed-campaign-scheduled',
+      tenantId: tenant.id,
+      name: 'Weekend flash sale',
+      description: 'Scheduled promo for repeat buyers',
+      status: 'SCHEDULED',
+      channel: 'email',
+      segmentId: 'seed-segment-repeat-buyers',
+      startsAt: new Date(Date.now() - 60_000),
+      metadata: {
+        subject: 'Weekend specials at Fresh Fish!',
+        body: 'Fresh catch this weekend — use WELCOME10 for 10% off.',
+      },
+    },
+  });
+
   await prisma.subscription.upsert({
     where: { id: 'seed-sub-freshfish' },
     update: {},
@@ -251,7 +319,8 @@ async function main() {
   console.log('  Demo coupon: WELCOME10 (10% off, min KES 500)');
   console.log('  Demo segment: Repeat buyers (evaluate in Marketing → Segments)');
   console.log('  Demo campaign: Welcome back offer (Marketing → Campaigns → Send now)');
-  console.log('  Product variants: Salmon (3 sizes), Prawns (3 packs) on PDP');
+  console.log('  Scheduled campaign: Weekend flash sale (auto-sends via cron)');
+  console.log('  Product variants: Salmon (3 sizes), Prawns (3 packs) with per-variant stock');
 
   await indexProductsForSearch(tenant.id);
 }
