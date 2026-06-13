@@ -3,6 +3,7 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
+  Scope,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY } from './public.decorator';
@@ -10,10 +11,11 @@ import { TenantContextService } from './tenant-context.service';
 
 export const TENANT_HEADER = 'x-tenant-id';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class TenantGuard implements CanActivate {
+  private readonly reflector = new Reflector();
+
   constructor(
-    private readonly reflector: Reflector,
     private readonly tenantContext: TenantContextService,
   ) {}
 
@@ -41,3 +43,4 @@ export class TenantGuard implements CanActivate {
     return true;
   }
 }
+

@@ -68,7 +68,7 @@ export class HealthService {
     name: string,
     url: string,
   ): Promise<ServiceHealth> {
-    const healthUrl = `${url.replace(/\/$/, '')}/health`;
+    const healthUrl = `${url.replace(/\/$/, '')}/api/v1/health`;
     const start = Date.now();
 
     try {

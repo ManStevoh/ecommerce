@@ -12,6 +12,27 @@ export class TenantIsolationMiddleware implements NestMiddleware {
   constructor(private readonly prisma: PrismaService) {}
 
   async use(req: Request, _res: Response, next: NextFunction) {
+    const path = req.originalUrl.split('?')[0];
+    // Bypass tenant validation for global/platform tenant routes
+    if (
+      path === '/api/v1/tenants' ||
+      path === '/api/tenants' ||
+      path === '/api/v1/tenants/platform-stats' ||
+      path === '/api/tenants/platform-stats' ||
+      path === '/api/v1/tenants/audit-logs' ||
+      path === '/api/tenants/audit-logs' ||
+      path === '/api/v1/tenants/provision' ||
+      path === '/api/tenants/provision' ||
+      path === '/api/v1/tenants/validate-subdomain' ||
+      path === '/api/tenants/validate-subdomain' ||
+      path.startsWith('/api/v1/tenants/by-subdomain/') ||
+      path.startsWith('/api/tenants/by-subdomain/') ||
+      /^\/api\/(v1\/)?tenants\/[^/]+$/.test(path) ||
+      /^\/api\/(v1\/)?tenants\/[^/]+\/status$/.test(path)
+    ) {
+      return next();
+    }
+
     const tenantId =
       (req.headers['x-tenant-id'] as string) ??
       req.query.tenantId?.toString();

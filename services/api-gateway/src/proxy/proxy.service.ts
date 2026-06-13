@@ -1,5 +1,5 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { createProxyMiddleware, type Options } from 'http-proxy-middleware';
+import { createProxyMiddleware, fixRequestBody, type Options } from 'http-proxy-middleware';
 import type { NextFunction, RequestHandler, Response } from 'express';
 import type { ServerResponse } from 'http';
 import { GatewayConfigService } from '../config/gateway-config.service';
@@ -116,6 +116,10 @@ export class ProxyService {
           const requestId = req.headers['x-request-id'];
           if (requestId) {
             proxyReq.setHeader('x-request-id', requestId as string);
+          }
+
+          if ((req as any).body) {
+            fixRequestBody(proxyReq, req);
           }
         },
         error: (err, _req, res) => {

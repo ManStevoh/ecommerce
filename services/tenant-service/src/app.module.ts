@@ -36,11 +36,15 @@ export class AppModule implements NestModule {
     consumer
       .apply(TenantIsolationMiddleware)
       .exclude(
-        { path: 'tenants', method: RequestMethod.GET },
-        { path: 'tenants/internal/provision', method: RequestMethod.POST },
-        { path: 'tenants/validate-subdomain', method: RequestMethod.POST },
-        { path: 'tenants/by-subdomain/(.*)', method: RequestMethod.GET },
-        { path: 'tenants/:id', method: RequestMethod.GET },
+        { path: '/api/v1/tenants', method: RequestMethod.GET },
+        { path: '/api/v1/tenants/platform-stats', method: RequestMethod.GET },
+        { path: '/api/v1/tenants/audit-logs', method: RequestMethod.GET },
+        { path: '/api/v1/tenants/internal/provision', method: RequestMethod.POST },
+        { path: '/api/v1/tenants/provision', method: RequestMethod.POST },
+        { path: '/api/v1/tenants/validate-subdomain', method: RequestMethod.POST },
+        { path: '/api/v1/tenants/by-subdomain/(.*)', method: RequestMethod.GET },
+        { path: '/api/v1/tenants/:id', method: RequestMethod.GET },
+        { path: '/api/v1/tenants/:id/status', method: RequestMethod.PATCH },
       )
       .forRoutes('*');
   }

@@ -218,6 +218,7 @@ export class AuthService {
     });
 
     const tokens = await this.generateAccessToken(payload, accessExpiresIn);
+    this.logger.log(`[DEBUG] All tokens successfully issued!`);
 
     return {
       user: this.toAuthUser(user),

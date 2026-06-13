@@ -43,6 +43,7 @@ async function bootstrap(): Promise<void> {
 
   logger.log(`Nexora API Gateway running on http://${host}:${port}`);
   logger.log(`Environment: ${config.nodeEnv}`);
+  logger.log(`Allowed CORS Origins: ${JSON.stringify(config.corsOrigins)}`);
 }
 
 bootstrap().catch((err: Error) => {

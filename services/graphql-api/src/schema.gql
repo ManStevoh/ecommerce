@@ -1,0 +1,47 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Mutation {
+  createProduct(name: String!, price: Float!, slug: String!, tenantId: String!): ProductType!
+}
+
+type OrderItemType {
+  name: String!
+  quantity: Int!
+  unitPrice: Float!
+}
+
+type OrderType {
+  customerEmail: String!
+  id: ID!
+  items: [OrderItemType!]!
+  orderNumber: String!
+  status: String!
+  totalAmount: Float!
+}
+
+type ProductType {
+  description: String
+  id: ID!
+  isActive: Boolean!
+  name: String!
+  price: Float!
+  slug: String!
+  stockQuantity: Int!
+}
+
+type Query {
+  orders(tenantId: String): [OrderType!]!
+  product(slug: String!, tenantId: String): ProductType
+  products(tenantId: String): [ProductType!]!
+  tenantBySubdomain(subdomain: String!): TenantType
+  tenants: [TenantType!]!
+}
+
+type TenantType {
+  id: ID!
+  name: String!
+  status: String!
+  subdomain: String!
+}
