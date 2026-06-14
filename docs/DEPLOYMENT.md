@@ -165,10 +165,11 @@ A polling script is located at [scripts/poll-deploy.sh](file:///home/staticlumen
    ```bash
    crontab -e
    ```
-3. Add the following line to check for updates every 5 minutes (adjust the schedule as needed):
+3. Add the following line to check for updates every 5 minutes (adjust the schedule as needed). Using `flock -n /tmp/deploy.lock` ensures that only one build/deployment runs on the server at any given time to prevent resource exhaustion:
    ```cron
-   */5 * * * * /bin/bash /home/staticlumen/Websites/ecommerce/scripts/poll-deploy.sh >> /home/staticlumen/Websites/ecommerce/deploy.log 2>&1
+   */5 * * * * flock -n /tmp/deploy.lock /bin/bash /home/staticlumen/Websites/ecommerce/scripts/poll-deploy.sh >> /home/staticlumen/Websites/ecommerce/deploy.log 2>&1
    ```
 4. Save and exit. The deployment status and updates will be logged to `/home/staticlumen/Websites/ecommerce/deploy.log`.
+
 
 
