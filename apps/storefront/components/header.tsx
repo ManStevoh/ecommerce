@@ -9,6 +9,7 @@ import { ThemeToggle } from "./theme-toggle";
 import { AiSearchBar } from "./ai-search-bar";
 import { MobileNav } from "./mobile-nav";
 import { useCartCount } from "@/store/cart";
+import { useWishlistCount } from "@/store/wishlist";
 
 export function Header({
   tenantName,
@@ -20,6 +21,7 @@ export function Header({
   variant?: LayoutVariant;
 }) {
   const cartCount = useCartCount();
+  const wishlistCount = useWishlistCount();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -73,7 +75,7 @@ export function Header({
         </div>
 
         {/* Desktop Nav */}
-        <nav className="hidden items-center gap-1 lg:flex">
+        <nav className="hidden items-center gap-3.5 lg:flex">
           {[
             { href: "/", label: "Shop" },
             { href: "/register", label: "Open a store" },
@@ -90,48 +92,66 @@ export function Header({
 
           <div className="mx-2 h-5 w-px bg-zinc-200 dark:bg-zinc-800" />
 
+          {/* User Button */}
           <Link
             href="/login"
-            className="rounded-lg p-2 text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"
+            className="group flex items-center gap-2 rounded-full border border-zinc-200/80 bg-white/40 px-3.5 py-1.5 text-sm font-medium text-zinc-600 shadow-sm backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-zinc-50 hover:text-zinc-900 dark:border-zinc-800/80 dark:bg-zinc-950/40 dark:text-zinc-400 dark:hover:border-zinc-700 dark:hover:bg-zinc-900 dark:hover:text-zinc-50"
             aria-label="Account"
           >
-            <User className="h-[18px] w-[18px]" />
+            <User className="h-4 w-4 text-zinc-400 group-hover:scale-110 group-hover:text-zinc-600 dark:text-zinc-500 dark:group-hover:text-zinc-300 transition-all duration-300" />
+            <span className="font-semibold tracking-tight">Login</span>
           </Link>
 
+          {/* Wishlist Button */}
           <Link
             href="/wishlist"
-            className="rounded-lg p-2 text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"
+            className="group flex items-center gap-2 rounded-full border border-zinc-200/80 bg-white/40 px-3.5 py-1.5 text-sm font-medium text-zinc-600 shadow-sm backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-zinc-50 hover:text-zinc-900 dark:border-zinc-800/80 dark:bg-zinc-950/40 dark:text-zinc-400 dark:hover:border-zinc-700 dark:hover:bg-zinc-900 dark:hover:text-zinc-50"
             aria-label="Wishlist"
           >
-            <Heart className="h-[18px] w-[18px]" />
-          </Link>
-
-          <Link
-            href="/cart"
-            className="relative rounded-lg p-2 text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"
-            aria-label="Cart"
-          >
-            <ShoppingBag className="h-[18px] w-[18px]" />
-            {cartCount > 0 && (
-              <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-theme-accent text-[10px] font-bold text-white animate-scale-in">
-                {cartCount}
+            <Heart className={`h-4 w-4 transition-all duration-300 group-hover:scale-110 ${
+              wishlistCount > 0 
+                ? "text-red-500 fill-red-500 animate-pulse" 
+                : "text-zinc-400 group-hover:text-zinc-600 dark:text-zinc-500 dark:group-hover:text-zinc-300"
+            }`} />
+            <span className="font-semibold tracking-tight">Favorites</span>
+            {wishlistCount > 0 && (
+              <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-bold text-white shadow-sm animate-scale-in">
+                {wishlistCount}
               </span>
             )}
           </Link>
+
+          {/* Cart Button */}
+          <Link
+            href="/cart"
+            className="group relative flex items-center gap-2 rounded-full border border-zinc-200/80 bg-white/40 px-3.5 py-1.5 text-sm font-medium text-zinc-600 shadow-sm backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-zinc-50 hover:text-zinc-900 dark:border-zinc-800/80 dark:bg-zinc-950/40 dark:text-zinc-400 dark:hover:border-zinc-700 dark:hover:bg-zinc-900 dark:hover:text-zinc-50"
+            aria-label="Cart"
+          >
+            <ShoppingBag className="h-4 w-4 text-zinc-400 group-hover:scale-110 group-hover:text-zinc-600 dark:text-zinc-500 dark:group-hover:text-zinc-300 transition-all duration-300" />
+            <span className="font-semibold tracking-tight">Cart</span>
+            <span className={`flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-[10px] font-bold text-white shadow-sm transition-all duration-300 ${
+              cartCount > 0 ? "bg-theme-accent animate-scale-in" : "bg-zinc-300 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-400"
+            }`}>
+              {cartCount}
+            </span>
+          </Link>
+
+          <div className="mx-1 h-5 w-px bg-zinc-200 dark:bg-zinc-800" />
 
           <ThemeToggle />
         </nav>
 
         {/* Mobile controls */}
-        <div className="flex items-center gap-1 lg:hidden">
+        <div className="flex items-center gap-2 lg:hidden">
           <ThemeToggle />
           <Link
             href="/cart"
-            className="relative rounded-lg p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            className="group relative flex h-9 w-9 items-center justify-center rounded-full border border-zinc-200/80 bg-white/40 shadow-sm backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-800/80 dark:bg-zinc-950/40 dark:hover:border-zinc-700 dark:hover:bg-zinc-900"
+            aria-label="Cart"
           >
-            <ShoppingBag className="h-5 w-5" />
+            <ShoppingBag className="h-4 w-4 text-zinc-500 dark:text-zinc-400 group-hover:scale-110 transition-transform duration-300" />
             {cartCount > 0 && (
-              <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-theme-accent text-[10px] font-bold text-white">
+              <span className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-theme-accent text-[9px] font-bold text-white shadow-sm animate-scale-in">
                 {cartCount}
               </span>
             )}
