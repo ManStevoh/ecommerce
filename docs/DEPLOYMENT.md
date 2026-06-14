@@ -112,3 +112,28 @@ docker compose -f docker-compose.prod.yml up -d
 # Reload the cloudflared daemon to apply the new config.yml routes
 sudo systemctl restart cloudflared
 ```
+
+---
+
+## 5. Updating the Platform (Deployment Updates)
+
+When you make changes to your codebase, push them to GitHub, and want to deploy them to your production server:
+
+### Step 5.1: Pull latest changes on the host
+```bash
+# Pull the latest code
+git pull origin main
+```
+
+### Step 5.2: Apply database updates and dependency changes
+```bash
+# Update dependencies and run schema synchronization
+docker compose -f docker-compose.prod.yml run --rm platform sh -c "corepack enable && pnpm install && pnpm db:push"
+```
+
+### Step 5.3: Restart the platform container
+```bash
+# Restart the container to rebuild and launch the updated production assets
+docker compose -f docker-compose.prod.yml down
+docker compose -f docker-compose.prod.yml up -d
+```
