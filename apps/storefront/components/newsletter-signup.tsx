@@ -20,21 +20,27 @@ export function NewsletterSignup() {
 
   return (
     <ScrollAnimator>
-      <section className="relative overflow-hidden rounded-3xl border border-zinc-200/30 bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 px-8 py-14 text-white shadow-2xl dark:border-zinc-700/30 md:px-16">
-        {/* Decorative blobs */}
-        <div className="pointer-events-none absolute -left-24 -top-24 h-64 w-64 rounded-full bg-amber-500/10 blur-3xl animate-float" />
-        <div className="pointer-events-none absolute -bottom-20 -right-20 h-56 w-56 rounded-full bg-violet-500/10 blur-3xl animate-float-2" />
+      <section className="relative overflow-hidden rounded-3xl border border-[var(--tenant-border)] bg-[var(--tenant-surface)] px-8 py-14 text-[var(--tenant-text)] shadow-xl backdrop-blur-md transition-all duration-300 hover:shadow-2xl md:px-16">
+        {/* Dynamic decorative blobs matching brand accent colors */}
+        <div
+          className="pointer-events-none absolute -left-24 -top-24 h-64 w-64 rounded-full opacity-[0.08] blur-3xl animate-float"
+          style={{ backgroundColor: "var(--tenant-accent)" }}
+        />
+        <div
+          className="pointer-events-none absolute -bottom-20 -right-20 h-56 w-56 rounded-full opacity-[0.08] blur-3xl animate-float-2"
+          style={{ backgroundColor: "var(--tenant-secondary, var(--tenant-accent))" }}
+        />
 
         <div className="relative flex flex-col items-center gap-8 md:flex-row md:items-start md:justify-between">
           <div className="max-w-md text-center md:text-left">
-            <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-medium tracking-wider uppercase">
+            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[var(--tenant-border)] bg-[var(--tenant-bg)]/40 px-3 py-1 text-xs font-semibold tracking-wider uppercase text-[var(--tenant-accent)] backdrop-blur-sm">
               <Mail className="h-3.5 w-3.5" />
               Newsletter
             </div>
-            <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
+            <h2 className="text-2xl font-bold tracking-tight md:text-3xl">
               Stay in the loop
             </h2>
-            <p className="mt-2 text-sm text-zinc-400">
+            <p className="mt-2 text-sm text-[var(--tenant-muted)] leading-relaxed">
               Get early access to new arrivals, exclusive deals, and curated
               style tips delivered to your inbox.
             </p>
@@ -51,13 +57,13 @@ export function NewsletterSignup() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
                 required
-                className="h-12 rounded-xl border-zinc-700 bg-zinc-800/80 pl-4 pr-4 text-white placeholder:text-zinc-500 focus-visible:ring-amber-500/50"
+                className="h-12 rounded-xl border-[var(--tenant-border)] bg-[var(--tenant-bg)]/60 pl-4 pr-4 text-[var(--tenant-text)] placeholder:text-zinc-400 focus-visible:ring-[var(--tenant-accent)]/30 focus-visible:border-[var(--tenant-accent)]"
               />
             </div>
             <Button
               type="submit"
               variant="luxury"
-              className="h-12 shrink-0 rounded-xl px-6"
+              className="h-12 shrink-0 rounded-xl px-6 font-semibold"
             >
               {submitted ? (
                 <>
