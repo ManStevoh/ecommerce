@@ -1,4 +1,4 @@
-import { IsBoolean, IsOptional, IsString, IsUrl, MaxLength } from 'class-validator';
+import { IsBoolean, IsOptional, IsString, IsUrl, MaxLength, IsObject } from 'class-validator';
 
 export class UpdateThemeSettingsDto {
   @IsOptional()
@@ -47,4 +47,8 @@ export class UpdateThemeSettingsDto {
   @IsString()
   @MaxLength(10000)
   customCss?: string;
+
+  @IsOptional()
+  @IsObject()
+  customColors?: Record<string, string>;
 }

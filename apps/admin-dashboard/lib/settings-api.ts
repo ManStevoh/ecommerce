@@ -24,6 +24,19 @@ export type StoreSettings = {
   supportPhone: string | null;
 };
 
+export type CustomColors = {
+  backgroundColor?: string;
+  textColor?: string;
+  surfaceColor?: string;
+  borderColor?: string;
+  mutedColor?: string;
+  darkBackgroundColor?: string;
+  darkTextColor?: string;
+  darkSurfaceColor?: string;
+  darkBorderColor?: string;
+  darkMutedColor?: string;
+};
+
 export type ThemeSettings = {
   id: string;
   tenantId: string;
@@ -37,6 +50,7 @@ export type ThemeSettings = {
   faviconUrl: string | null;
   darkMode: boolean;
   customCss: string | null;
+  customColors?: CustomColors | null;
 };
 
 export type ThemePresetSummary = {
@@ -48,6 +62,11 @@ export type ThemePresetSummary = {
   accentColor: string;
   darkMode: boolean;
   defaultLayoutVariant?: string;
+  backgroundColor?: string;
+  textColor?: string;
+  surfaceColor?: string;
+  borderColor?: string;
+  mutedColor?: string;
 };
 
 export type LayoutVariantSummary = {
@@ -150,6 +169,7 @@ export async function updateThemeSettings(
       | 'faviconUrl'
       | 'darkMode'
       | 'customCss'
+      | 'customColors'
     >
   >,
 ): Promise<ThemeSettings> {

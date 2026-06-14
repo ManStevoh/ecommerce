@@ -34,6 +34,19 @@ export type ThemePreset = {
   radius: string;
 };
 
+export type CustomColors = {
+  backgroundColor?: string;
+  textColor?: string;
+  surfaceColor?: string;
+  borderColor?: string;
+  mutedColor?: string;
+  darkBackgroundColor?: string;
+  darkTextColor?: string;
+  darkSurfaceColor?: string;
+  darkBorderColor?: string;
+  darkMutedColor?: string;
+};
+
 export type ThemeSettingsInput = {
   themePreset?: string | null;
   layoutVariant?: string | null;
@@ -45,6 +58,7 @@ export type ThemeSettingsInput = {
   faviconUrl?: string | null;
   darkMode?: boolean;
   customCss?: string | null;
+  customColors?: CustomColors | null;
 };
 
 export type ResolvedTheme = ThemeSettingsInput & {

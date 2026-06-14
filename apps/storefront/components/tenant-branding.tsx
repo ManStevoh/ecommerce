@@ -1,9 +1,5 @@
-"use client";
-
 import { resolveTheme, type ThemeSettingsInput } from "@nexora/themes";
 import type { TenantTheme } from "@/lib/tenant";
-import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
 
 type Props = {
   theme: TenantTheme;
@@ -11,35 +7,52 @@ type Props = {
 };
 
 export function TenantBranding({ theme, children }: Props) {
-  const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   const resolved = resolveTheme(theme as ThemeSettingsInput);
-  const isDark = resolvedTheme === "dark" || (!mounted && theme.darkMode);
+  
+  const cc = theme.customColors ?? {};
+  const darkBg = cc.darkBackgroundColor ?? "#09090b";
+  const darkText = cc.darkTextColor ?? "#fafafa";
+  const darkSurface = cc.darkSurfaceColor ?? "rgba(18, 18, 22, 0.72)";
+  const darkMuted = cc.darkMutedColor ?? "#a1a1aa";
+  const darkBorder = cc.darkBorderColor ?? "rgba(255, 255, 255, 0.08)";
+  const darkHeroGrad = `linear-gradient(135deg, ${resolved.accentColor}1c 0%, transparent 60%, rgba(9, 9, 11, 0.8) 100%)`;
 
-  const cssVars = { ...resolved.cssVars };
+  const cssRules = `
+    .tenant-branded {
+      --tenant-primary: ${resolved.cssVars["--tenant-primary"]};
+      --tenant-secondary: ${resolved.cssVars["--tenant-secondary"]};
+      --tenant-accent: ${resolved.cssVars["--tenant-accent"]};
+      --font-sans: ${resolved.cssVars["--font-sans"]};
+      --tenant-bg: ${resolved.cssVars["--tenant-bg"]};
+      --tenant-surface: ${resolved.cssVars["--tenant-surface"]};
+      --tenant-text: ${resolved.cssVars["--tenant-text"]};
+      --tenant-muted: ${resolved.cssVars["--tenant-muted"]};
+      --tenant-border: ${resolved.cssVars["--tenant-border"]};
+      --tenant-hero-gradient: ${resolved.cssVars["--tenant-hero-gradient"]};
+      --tenant-btn-bg: ${resolved.cssVars["--tenant-btn-bg"]};
+      --tenant-btn-text: ${resolved.cssVars["--tenant-btn-text"]};
+      --tenant-btn-shadow: ${resolved.cssVars["--tenant-btn-shadow"]};
+      --tenant-radius: ${resolved.cssVars["--tenant-radius"]};
+    }
 
-  if (isDark) {
-    cssVars["--tenant-bg"] = "#09090b"; // Tailwind zinc-950
-    cssVars["--tenant-text"] = "#fafafa"; // Tailwind zinc-50
-    cssVars["--tenant-surface"] = "rgba(18, 18, 22, 0.72)"; // Premium glassy dark surface
-    cssVars["--tenant-muted"] = "#a1a1aa"; // Tailwind zinc-400
-    cssVars["--tenant-border"] = "rgba(255, 255, 255, 0.08)"; // Subtle dark border
-    cssVars["--tenant-hero-gradient"] = `linear-gradient(135deg, ${resolved.accentColor}1c 0%, transparent 60%, rgba(9, 9, 11, 0.8) 100%)`;
-  }
+    .dark .tenant-branded {
+      --tenant-bg: ${darkBg};
+      --tenant-text: ${darkText};
+      --tenant-surface: ${darkSurface};
+      --tenant-muted: ${darkMuted};
+      --tenant-border: ${darkBorder};
+      --tenant-hero-gradient: ${darkHeroGrad};
+    }
+  `;
 
   return (
     <>
+      <style dangerouslySetInnerHTML={{ __html: cssRules }} />
       {theme.customCss ? (
         <style dangerouslySetInnerHTML={{ __html: theme.customCss }} />
       ) : null}
       <div
         data-theme={resolved.themePreset}
-        style={cssVars as React.CSSProperties}
         className="tenant-branded min-h-full"
       >
         {children}

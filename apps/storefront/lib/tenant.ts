@@ -4,6 +4,19 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
 const TENANT_SUBDOMAIN =
   process.env.NEXT_PUBLIC_TENANT_SUBDOMAIN ?? "freshfish";
 
+export type CustomColors = {
+  backgroundColor?: string;
+  textColor?: string;
+  surfaceColor?: string;
+  borderColor?: string;
+  mutedColor?: string;
+  darkBackgroundColor?: string;
+  darkTextColor?: string;
+  darkSurfaceColor?: string;
+  darkBorderColor?: string;
+  darkMutedColor?: string;
+};
+
 export type TenantTheme = {
   themePreset?: string | null;
   layoutVariant?: string | null;
@@ -15,6 +28,7 @@ export type TenantTheme = {
   faviconUrl: string | null;
   darkMode: boolean;
   customCss: string | null;
+  customColors?: CustomColors | null;
 };
 
 export type TenantContext = {
@@ -34,6 +48,7 @@ const DEFAULT_THEME: TenantTheme = {
   faviconUrl: null,
   darkMode: false,
   customCss: null,
+  customColors: null,
 };
 
 function resolveSubdomain(host: string): string {

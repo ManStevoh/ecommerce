@@ -16,7 +16,7 @@ export class ThemeSettingsService {
   }
 
   listPresets() {
-    return THEME_PRESETS.map(({ slug, name, description, primaryColor, secondaryColor, accentColor, darkMode }) => ({
+    return THEME_PRESETS.map(({ slug, name, description, primaryColor, secondaryColor, accentColor, darkMode, backgroundColor, textColor, surfaceColor, borderColor, mutedColor }) => ({
       slug,
       name,
       description,
@@ -24,6 +24,11 @@ export class ThemeSettingsService {
       secondaryColor,
       accentColor,
       darkMode,
+      backgroundColor,
+      textColor,
+      surfaceColor,
+      borderColor,
+      mutedColor,
       defaultLayoutVariant: PRESET_LAYOUT_VARIANTS[slug],
     }));
   }
@@ -44,6 +49,7 @@ export class ThemeSettingsService {
             faviconUrl: dto.faviconUrl,
             darkMode: dto.darkMode,
             customCss: dto.customCss,
+            customColors: dto.customColors,
           })
         : { ...dto };
 
@@ -54,6 +60,7 @@ export class ThemeSettingsService {
       logoUrl: raw.logoUrl ?? undefined,
       faviconUrl: raw.faviconUrl ?? undefined,
       customCss: raw.customCss ?? undefined,
+      customColors: raw.customColors ?? undefined,
     };
 
     return this.prisma.themeSettings.upsert({

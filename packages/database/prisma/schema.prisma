@@ -218,6 +218,7 @@ model ThemeSettings {
   faviconUrl     String? @map("favicon_url")
   darkMode       Boolean @default(false) @map("dark_mode")
   customCss      String? @map("custom_css")
+  customColors   Json?   @default("{}") @map("custom_colors")
   tenant         Tenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@map("theme_settings")

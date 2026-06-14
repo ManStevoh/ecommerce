@@ -11,6 +11,13 @@ function presetToSettings(preset: ThemePreset): ThemeSettingsInput {
     accentColor: preset.accentColor,
     fontFamily: preset.fontFamily,
     darkMode: preset.darkMode,
+    customColors: {
+      backgroundColor: preset.backgroundColor,
+      textColor: preset.textColor,
+      surfaceColor: preset.surfaceColor,
+      borderColor: preset.borderColor,
+      mutedColor: preset.mutedColor,
+    },
   };
 }
 
@@ -23,16 +30,23 @@ function buildCssVars(
   const accent = overrides.accentColor ?? preset.accentColor;
   const font = overrides.fontFamily ?? preset.fontFamily;
 
+  const customColors = overrides.customColors ?? {};
+  const background = customColors.backgroundColor ?? preset.backgroundColor;
+  const textColor = customColors.textColor ?? preset.textColor;
+  const surface = customColors.surfaceColor ?? preset.surfaceColor;
+  const border = customColors.borderColor ?? preset.borderColor;
+  const muted = customColors.mutedColor ?? preset.mutedColor;
+
   return {
     '--tenant-primary': primary,
     '--tenant-secondary': secondary,
     '--tenant-accent': accent,
     '--font-sans': font,
-    '--tenant-bg': preset.backgroundColor,
-    '--tenant-surface': preset.surfaceColor,
-    '--tenant-text': preset.textColor,
-    '--tenant-muted': preset.mutedColor,
-    '--tenant-border': preset.borderColor,
+    '--tenant-bg': background,
+    '--tenant-surface': surface,
+    '--tenant-text': textColor,
+    '--tenant-muted': muted,
+    '--tenant-border': border,
     '--tenant-hero-gradient': preset.heroGradient,
     '--tenant-btn-bg': preset.buttonBackground,
     '--tenant-btn-text': preset.buttonText,
@@ -62,6 +76,7 @@ export function resolveTheme(settings: ThemeSettingsInput): ResolvedTheme {
     faviconUrl: settings.faviconUrl ?? null,
     darkMode: settings.darkMode ?? preset.darkMode,
     customCss: settings.customCss ?? null,
+    customColors: settings.customColors ?? null,
     cssVars: buildCssVars(preset, settings),
   };
 }

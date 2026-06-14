@@ -35,6 +35,21 @@ export default function BrandingPage() {
   const [faviconUrl, setFaviconUrl] = useState("");
   const [darkMode, setDarkMode] = useState(false);
   const [customCss, setCustomCss] = useState("");
+
+  // Custom Colors - Light Mode
+  const [backgroundColor, setBackgroundColor] = useState("#fafafa");
+  const [textColor, setTextColor] = useState("#18181b");
+  const [surfaceColor, setSurfaceColor] = useState("rgba(255,255,255,0.72)");
+  const [borderColor, setBorderColor] = useState("rgba(120,113,108,0.25)");
+  const [mutedColor, setMutedColor] = useState("#71717a");
+
+  // Custom Colors - Dark Mode
+  const [darkBackgroundColor, setDarkBackgroundColor] = useState("#09090b");
+  const [darkTextColor, setDarkTextColor] = useState("#fafafa");
+  const [darkSurfaceColor, setDarkSurfaceColor] = useState("rgba(18,18,22,0.72)");
+  const [darkBorderColor, setDarkBorderColor] = useState("rgba(255,255,255,0.08)");
+  const [darkMutedColor, setDarkMutedColor] = useState("#a1a1aa");
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -59,6 +74,19 @@ export default function BrandingPage() {
         setFaviconUrl(theme.faviconUrl ?? "");
         setDarkMode(theme.darkMode);
         setCustomCss(theme.customCss ?? "");
+
+        const cc = theme.customColors ?? {};
+        if (cc.backgroundColor) setBackgroundColor(cc.backgroundColor);
+        if (cc.textColor) setTextColor(cc.textColor);
+        if (cc.surfaceColor) setSurfaceColor(cc.surfaceColor);
+        if (cc.borderColor) setBorderColor(cc.borderColor);
+        if (cc.mutedColor) setMutedColor(cc.mutedColor);
+
+        if (cc.darkBackgroundColor) setDarkBackgroundColor(cc.darkBackgroundColor);
+        if (cc.darkTextColor) setDarkTextColor(cc.darkTextColor);
+        if (cc.darkSurfaceColor) setDarkSurfaceColor(cc.darkSurfaceColor);
+        if (cc.darkBorderColor) setDarkBorderColor(cc.darkBorderColor);
+        if (cc.darkMutedColor) setDarkMutedColor(cc.darkMutedColor);
       }
       setLoading(false);
     }
@@ -76,6 +104,13 @@ export default function BrandingPage() {
     if (preset.defaultLayoutVariant) {
       setLayoutVariant(preset.defaultLayoutVariant);
     }
+
+    // Load defaults from preset if available
+    if (preset.backgroundColor) setBackgroundColor(preset.backgroundColor);
+    if (preset.textColor) setTextColor(preset.textColor);
+    if (preset.surfaceColor) setSurfaceColor(preset.surfaceColor);
+    if (preset.borderColor) setBorderColor(preset.borderColor);
+    if (preset.mutedColor) setMutedColor(preset.mutedColor);
   }
 
   async function handleSave() {
@@ -93,6 +128,18 @@ export default function BrandingPage() {
         faviconUrl: faviconUrl || undefined,
         darkMode,
         customCss: customCss || undefined,
+        customColors: {
+          backgroundColor,
+          textColor,
+          surfaceColor,
+          borderColor,
+          mutedColor,
+          darkBackgroundColor,
+          darkTextColor,
+          darkSurfaceColor,
+          darkBorderColor,
+          darkMutedColor,
+        },
       });
       setMessage("Theme settings saved. Refresh your storefront to see changes.");
     } catch {
@@ -181,26 +228,47 @@ export default function BrandingPage() {
           <CardHeader>
             <CardTitle>Theme Colors</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-6">
             {loading ? (
               <p className="text-zinc-500">Loading…</p>
             ) : (
               <>
-                <ColorField label="Primary" value={primaryColor} onChange={setPrimaryColor} />
-                <ColorField label="Secondary" value={secondaryColor} onChange={setSecondaryColor} />
-                <ColorField label="Accent" value={accentColor} onChange={setAccentColor} />
-                <div>
-                  <Label htmlFor="font">Font Family</Label>
-                  <Input id="font" value={fontFamily} onChange={(e) => setFontFamily(e.target.value)} className="mt-1.5" />
+                <div className="space-y-4">
+                  <h3 className="text-sm font-semibold text-zinc-900 border-b pb-1.5 dark:text-white">Brand Colors</h3>
+                  <ColorField label="Primary" value={primaryColor} onChange={setPrimaryColor} />
+                  <ColorField label="Secondary" value={secondaryColor} onChange={setSecondaryColor} />
+                  <ColorField label="Accent" value={accentColor} onChange={setAccentColor} />
+                  <div>
+                    <Label htmlFor="font">Font Family</Label>
+                    <Input id="font" value={fontFamily} onChange={(e) => setFontFamily(e.target.value)} className="mt-1.5" />
+                  </div>
+                  <label className="flex items-center gap-2 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={darkMode}
+                      onChange={(e) => setDarkMode(e.target.checked)}
+                    />
+                    Default to dark mode on storefront
+                  </label>
                 </div>
-                <label className="flex items-center gap-2 text-sm">
-                  <input
-                    type="checkbox"
-                    checked={darkMode}
-                    onChange={(e) => setDarkMode(e.target.checked)}
-                  />
-                  Default to dark mode on storefront
-                </label>
+
+                <div className="space-y-4">
+                  <h3 className="text-sm font-semibold text-zinc-900 border-b pb-1.5 dark:text-white">Light Mode overrides</h3>
+                  <ColorField label="Background" value={backgroundColor} onChange={setBackgroundColor} />
+                  <ColorField label="Text Color" value={textColor} onChange={setTextColor} />
+                  <ColorField label="Surface (Cards)" value={surfaceColor} onChange={setSurfaceColor} />
+                  <ColorField label="Borders" value={borderColor} onChange={setBorderColor} />
+                  <ColorField label="Muted Text" value={mutedColor} onChange={setMutedColor} />
+                </div>
+
+                <div className="space-y-4">
+                  <h3 className="text-sm font-semibold text-zinc-900 border-b pb-1.5 dark:text-white">Dark Mode overrides</h3>
+                  <ColorField label="Background" value={darkBackgroundColor} onChange={setDarkBackgroundColor} />
+                  <ColorField label="Text Color" value={darkTextColor} onChange={setDarkTextColor} />
+                  <ColorField label="Surface (Cards)" value={darkSurfaceColor} onChange={setDarkSurfaceColor} />
+                  <ColorField label="Borders" value={darkBorderColor} onChange={setDarkBorderColor} />
+                  <ColorField label="Muted Text" value={darkMutedColor} onChange={setDarkMutedColor} />
+                </div>
               </>
             )}
           </CardContent>
