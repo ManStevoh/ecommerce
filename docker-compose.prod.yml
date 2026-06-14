@@ -71,7 +71,7 @@ services:
       - "3300:3300" # Super Admin Panel
     volumes:
       - .:/app
-    command: sh -c "corepack enable && pnpm install && pnpm db:generate && pnpm build && pnpm turbo run dev --parallel --concurrency=40"
+    command: sh -c "corepack enable && pnpm install && pnpm db:generate && pnpm build && pnpm turbo run start --parallel --concurrency=40"
     environment:
       DATABASE_URL: postgresql://${DB_USER:-nexora}:${DB_PASSWORD:-nexora_secret}@postgres:5432/${DB_NAME:-nexora}?schema=public
       REDIS_URL: redis://redis:6379
