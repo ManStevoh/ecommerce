@@ -137,3 +137,17 @@ docker compose -f docker-compose.prod.yml run --rm platform sh -c "corepack enab
 docker compose -f docker-compose.prod.yml down
 docker compose -f docker-compose.prod.yml up -d
 ```
+
+### Alternatively: Automate Updates with a Script
+
+For convenience, a script is provided at [scripts/update-platform.sh](file:///home/staticlumen/Projects/ecommerce/scripts/update-platform.sh) that consolidates all of the steps above.
+
+To run the automated update:
+```bash
+# Make it executable (if not already done)
+chmod +x scripts/update-platform.sh
+
+# Run the update script
+./scripts/update-platform.sh
+```
+
