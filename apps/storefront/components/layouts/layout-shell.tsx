@@ -4,7 +4,7 @@ import { Footer } from "@/components/footer";
 import { AnnouncementBar } from "@/components/announcement-bar";
 
 const MAIN_CLASS: Record<LayoutVariant, string> = {
-  classic: "mx-auto max-w-7xl px-6 py-8",
+  classic: "mx-auto max-w-[1600px] px-6 py-8",
   editorial: "mx-auto max-w-6xl px-8 py-10",
   minimal: "mx-auto max-w-5xl px-4 py-6",
 };
