@@ -65,6 +65,14 @@ export class TenantsService {
       },
     });
 
+    try {
+      await this.subscriptionClient.startTrial(tenant.id);
+    } catch (err) {
+      this.logger.warn(
+        `Trial start skipped for ${tenant.id}: ${String(err)}`,
+      );
+    }
+
     const baseDomain = this.config.get<string>('baseDomain');
 
     return {

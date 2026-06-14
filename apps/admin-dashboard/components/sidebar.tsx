@@ -21,6 +21,7 @@ import {
   LogOut,
   Menu,
   X,
+  CreditCard,
 } from 'lucide-react';
 import { Button, cn } from '@nexora/ui';
 import { clearSession, getStoredUser } from '@/lib/auth';
@@ -59,6 +60,7 @@ const navGroups = [
     items: [
       { href: '/settings', label: 'General', icon: Settings },
       { href: '/settings/branding', label: 'Branding', icon: Palette },
+      { href: '/settings/billing', label: 'Billing', icon: CreditCard },
       { href: '/settings/security', label: 'Security', icon: Shield },
     ],
   },

@@ -1,5 +1,6 @@
-import { Body, Controller, Delete, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, UseGuards } from '@nestjs/common';
 import { Public } from '../common/tenant/public.decorator';
+import { PlatformAdminGuard } from '../common/guards/platform-admin.guard';
 import { SubscriptionsService } from './subscriptions.service';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto';
 
@@ -12,14 +13,16 @@ export class SubscriptionsController {
     return this.subscriptionsService.create(dto);
   }
 
-  @Get('platform/stats')
   @Public()
+  @UseGuards(PlatformAdminGuard)
+  @Get('platform/stats')
   platformStats() {
     return this.subscriptionsService.getPlatformStats();
   }
 
-  @Get('platform')
   @Public()
+  @UseGuards(PlatformAdminGuard)
+  @Get('platform')
   findAllPlatform() {
     return this.subscriptionsService.findAllPlatform();
   }

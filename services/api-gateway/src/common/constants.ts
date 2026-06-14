@@ -11,6 +11,10 @@ export const PLATFORM_PATHS: RegExp[] = [
   /^\/api\/v1\/tenants\/audit-logs$/,
   /^\/api\/v1\/tenants\/[^/]+\/status$/,
   /^\/api\/v1\/subscriptions\/platform$/,
+  /^\/api\/v1\/subscriptions\/platform\/stats$/,
+  /^\/api\/v1\/plans\/admin\/all$/,
+  /^\/api\/v1\/plans\/admin$/,
+  /^\/api\/v1\/plans\/admin\/[^/]+$/,
   /^\/api\/v1\/graphql$/,
 ];
 

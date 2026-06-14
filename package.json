@@ -19,6 +19,7 @@
     "test:variants": "node scripts/test-variants.mjs",
     "test:pending": "node scripts/test-pending-features.mjs",
     "test:batch": "node scripts/test-batch-features.mjs",
+    "test:saas": "node scripts/test-saas-flow.mjs",
     "db:generate": "pnpm --filter @nexora/database db:generate",
     "db:migrate": "pnpm --filter @nexora/database db:migrate",
     "db:push": "pnpm --filter @nexora/database db:push",

@@ -3,6 +3,44 @@ import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
+async function seedPlan(plan: {
+  slug: string;
+  name: string;
+  description: string;
+  priceMonthly: number;
+  priceYearly: number;
+  maxProducts: number;
+  maxUsers: number;
+  maxStorageMb: number;
+  features: string[];
+}) {
+  return prisma.plan.upsert({
+    where: { slug: plan.slug },
+    update: {
+      name: plan.name,
+      description: plan.description,
+      priceMonthly: plan.priceMonthly,
+      priceYearly: plan.priceYearly,
+      maxProducts: plan.maxProducts,
+      maxUsers: plan.maxUsers,
+      maxStorageMb: plan.maxStorageMb,
+      features: plan.features,
+    },
+    create: {
+      name: plan.name,
+      slug: plan.slug,
+      description: plan.description,
+      priceMonthly: plan.priceMonthly,
+      priceYearly: plan.priceYearly,
+      currency: 'USD',
+      maxProducts: plan.maxProducts,
+      maxUsers: plan.maxUsers,
+      maxStorageMb: plan.maxStorageMb,
+      features: plan.features,
+    },
+  });
+}
+
 async function main() {
   const passwordHash = await bcrypt.hash('Admin123!', 12);
 
@@ -30,20 +68,52 @@ async function main() {
     },
   });
 
-  const growthPlan = await prisma.plan.upsert({
-    where: { slug: 'growth' },
-    update: {},
-    create: {
-      name: 'Growth',
-      slug: 'growth',
-      description: 'For growing businesses',
-      priceMonthly: 79,
-      priceYearly: 790,
-      currency: 'USD',
-      maxProducts: 1000,
-      maxUsers: 10,
-      maxStorageMb: 5120,
-    },
+  const growthPlan = await seedPlan({
+    slug: 'growth',
+    name: 'Growth',
+    description: 'For growing businesses',
+    priceMonthly: 79,
+    priceYearly: 790,
+    maxProducts: 1000,
+    maxUsers: 10,
+    maxStorageMb: 5120,
+    features: ['Up to 1,000 products', 'Advanced analytics', 'Priority support'],
+  });
+
+  await seedPlan({
+    slug: 'starter',
+    name: 'Starter',
+    description: 'For new merchants getting started',
+    priceMonthly: 29,
+    priceYearly: 290,
+    maxProducts: 100,
+    maxUsers: 2,
+    maxStorageMb: 1024,
+    features: ['Up to 100 products', 'Basic analytics', 'Email support'],
+  });
+
+  await seedPlan({
+    slug: 'business',
+    name: 'Business',
+    description: 'For established brands',
+    priceMonthly: 199,
+    priceYearly: 1990,
+    maxProducts: 999999,
+    maxUsers: 50,
+    maxStorageMb: 20480,
+    features: ['Unlimited products', 'AI insights', 'Dedicated support'],
+  });
+
+  await seedPlan({
+    slug: 'enterprise',
+    name: 'Enterprise',
+    description: 'Custom solutions for large organizations',
+    priceMonthly: 0,
+    priceYearly: 0,
+    maxProducts: 999999,
+    maxUsers: 999999,
+    maxStorageMb: 102400,
+    features: ['Custom SLA', 'SSO', 'Dedicated infrastructure'],
   });
 
   const tenant = await prisma.tenant.upsert({
@@ -313,7 +383,8 @@ async function main() {
   console.log('  NEXT_PUBLIC_TENANT_ID=' + tenant.id);
   console.log('  (copy into apps/storefront/.env.local)');
   console.log('');
-  console.log('  Demo tenant:', tenant.id);
+  console.log('  SaaS plans: starter, growth, business, enterprise (super-admin → Plans)');
+  console.log('  Store billing: Admin → Settings → Billing (subscribe / cancel)');
   console.log('  Store URL:   freshfish.nexora.local');
   console.log('  Store owner:', demoOwner.email, '/ Admin123!');
   console.log('  Demo coupon: WELCOME10 (10% off, min KES 500)');

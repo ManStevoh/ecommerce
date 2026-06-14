@@ -3,57 +3,49 @@ import { SubscriptionStatus } from '@nexora/database';
 import { SubscriptionPlan } from '@nexora/shared-types';
 import { PrismaService } from '../database/prisma.service';
 import { TenantContextService } from '../common/tenant/tenant-context.service';
+import { PlanResolverService } from '../plans/plan-resolver.service';
 
 const DEFAULT_TRIAL_DAYS = 14;
-
-const PLAN_SLUG_MAP: Record<SubscriptionPlan, string> = {
-  [SubscriptionPlan.STARTER]: 'starter',
-  [SubscriptionPlan.GROWTH]: 'growth',
-  [SubscriptionPlan.BUSINESS]: 'business',
-  [SubscriptionPlan.ENTERPRISE]: 'enterprise',
-};
 
 @Injectable()
 export class TrialsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly tenantContext: TenantContextService,
+    private readonly planResolver: PlanResolverService,
   ) {}
-
-  private async resolvePlanId(plan: SubscriptionPlan): Promise<string> {
-    const slug = PLAN_SLUG_MAP[plan] ?? 'growth';
-    let record = await this.prisma.plan.findUnique({ where: { slug } });
-    if (!record) {
-      record = await this.prisma.plan.create({
-        data: { name: plan, slug, priceMonthly: 0, priceYearly: 0 },
-      });
-    }
-    return record.id;
-  }
 
   async start(plan: SubscriptionPlan = SubscriptionPlan.GROWTH) {
     const tenantId = this.tenantContext.getTenantId();
     const existing = await this.prisma.subscription.findFirst({
-      where: { tenantId, status: SubscriptionStatus.TRIALING },
+      where: {
+        tenantId,
+        status: { in: [SubscriptionStatus.TRIALING, SubscriptionStatus.ACTIVE] },
+      },
     });
     if (existing) {
-      throw new ConflictException('Trial already active for this tenant');
+      throw new ConflictException('Tenant already has an active subscription or trial');
     }
 
     const endsAt = new Date();
     endsAt.setDate(endsAt.getDate() + DEFAULT_TRIAL_DAYS);
-    const planId = await this.resolvePlanId(plan);
+    const planRecord = await this.planResolver.resolveByPlanEnum(plan);
 
     const subscription = await this.prisma.subscription.create({
       data: {
         tenantId,
-        planId,
+        planId: planRecord.id,
         status: SubscriptionStatus.TRIALING,
         currentPeriodStart: new Date(),
         currentPeriodEnd: endsAt,
         trialEndsAt: endsAt,
       },
       include: { plan: true },
+    });
+
+    await this.prisma.tenant.update({
+      where: { id: tenantId },
+      data: { planId: planRecord.id },
     });
 
     return {
@@ -71,6 +63,7 @@ export class TrialsService {
     const trial = await this.prisma.subscription.findFirst({
       where: { tenantId, status: SubscriptionStatus.TRIALING },
       orderBy: { createdAt: 'desc' },
+      include: { plan: true },
     });
 
     if (!trial?.trialEndsAt) {
@@ -86,6 +79,7 @@ export class TrialsService {
       daysRemaining,
       endsAt: trial.trialEndsAt,
       subscriptionId: trial.id,
+      plan: trial.plan,
     };
   }
 }

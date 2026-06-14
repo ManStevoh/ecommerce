@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  Layers,
   Building2,
   CreditCard,
   BarChart3,
@@ -14,6 +15,7 @@ import { cn } from "@nexora/ui";
 
 const navItems = [
   { href: "/", label: "Tenants", icon: Building2 },
+  { href: "/plans", label: "Plans", icon: Layers },
   { href: "/subscriptions", label: "Subscriptions", icon: CreditCard },
   { href: "/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/payments", label: "Payment Gateway", icon: Wallet },
