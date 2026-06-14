@@ -82,6 +82,7 @@ services:
       NEXT_PUBLIC_TENANT_SUBDOMAIN: freshfish
       CORS_ORIGINS: "http://localhost:3000,http://localhost:3100,http://localhost:3200,*.kenwafula.cv"
       PORT: 3000
+      PRISMA_SKIP_DOTENV: 1
     depends_on:
       postgres:
         condition: service_healthy
