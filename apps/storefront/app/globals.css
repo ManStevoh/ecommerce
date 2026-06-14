@@ -79,6 +79,12 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    background-color: #fafafa;
+    transition: background-color 0.3s ease;
+  }
+
+  html.dark {
+    background-color: #09090b;
   }
 
   :root {
@@ -93,6 +99,7 @@
 
   body {
     @apply antialiased;
+    background-color: transparent;
   }
 
   /* Custom Scrollbar */
@@ -115,7 +122,8 @@
     font-family: var(--font-sans, Inter, sans-serif);
     background-color: var(--tenant-bg, #fafafa);
     color: var(--tenant-text, #18181b);
-    min-height: 100%;
+    min-height: 100vh;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
   }
 
   .tenant-branded a:hover {
