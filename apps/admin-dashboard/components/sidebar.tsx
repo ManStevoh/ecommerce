@@ -22,6 +22,7 @@ import {
   Menu,
   X,
   CreditCard,
+  Sparkles,
 } from 'lucide-react';
 import { Button, cn } from '@nexora/ui';
 import { clearSession, getStoredUser } from '@/lib/auth';
@@ -46,6 +47,7 @@ const navGroups = [
   {
     label: 'Marketing',
     items: [
+      { href: '/marketing', label: 'Overview', icon: Sparkles },
       { href: '/marketing/campaigns', label: 'Campaigns', icon: Megaphone },
       { href: '/marketing/coupons', label: 'Coupons', icon: Ticket },
       { href: '/marketing/segments', label: 'Segments', icon: Users },

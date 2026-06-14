@@ -14,10 +14,13 @@ function headers(): Record<string, string> {
 export type Campaign = {
   id: string;
   name: string;
+  description?: string | null;
   status: string;
   channel: string;
+  segmentId?: string | null;
   startsAt?: string | null;
   endsAt?: string | null;
+  metadata?: Record<string, unknown> | null;
 };
 
 export type Coupon = {
@@ -25,6 +28,8 @@ export type Coupon = {
   code: string;
   type: string;
   value: number | string;
+  minOrderAmount?: number | string | null;
+  maxUses?: number | null;
   isActive: boolean;
   usedCount: number;
 };
@@ -45,6 +50,8 @@ export async function createCoupon(data: {
   code: string;
   type: string;
   value: number;
+  minOrderAmount?: number;
+  maxUses?: number;
 }): Promise<Coupon> {
   const res = await fetch(`${API_BASE}/api/v1/coupons`, {
     method: 'POST',
@@ -52,6 +59,45 @@ export async function createCoupon(data: {
     body: JSON.stringify(data),
   });
   if (!res.ok) throw new Error(`Failed to create coupon (${res.status})`);
+  return res.json();
+}
+
+export async function updateCoupon(
+  id: string,
+  data: Partial<{ isActive: boolean; maxUses: number; minOrderAmount: number }>,
+): Promise<Coupon> {
+  const res = await fetch(`${API_BASE}/api/v1/coupons/${id}`, {
+    method: 'PATCH',
+    headers: headers(),
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error(`Failed to update coupon (${res.status})`);
+  return res.json();
+}
+
+export async function deleteCoupon(id: string): Promise<void> {
+  const res = await fetch(`${API_BASE}/api/v1/coupons/${id}`, {
+    method: 'DELETE',
+    headers: headers(),
+  });
+  if (!res.ok) throw new Error(`Failed to delete coupon (${res.status})`);
+}
+
+export async function createCampaign(data: {
+  name: string;
+  description?: string;
+  segmentId?: string;
+  channel?: string;
+  status?: string;
+  startsAt?: string;
+  metadata?: Record<string, unknown>;
+}): Promise<Campaign> {
+  const res = await fetch(`${API_BASE}/api/v1/campaigns`, {
+    method: 'POST',
+    headers: headers(),
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error(`Failed to create campaign (${res.status})`);
   return res.json();
 }
 

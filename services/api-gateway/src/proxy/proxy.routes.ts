@@ -69,6 +69,7 @@ export const PROXY_ROUTES: ProxyRoute[] = [
   { prefix: '/api/v1/coupons', targetEnvKey: 'marketing', stripPrefix: false },
   { prefix: '/api/v1/segments', targetEnvKey: 'marketing', stripPrefix: false },
   { prefix: '/api/v1/pages', targetEnvKey: 'cms', stripPrefix: false },
+  { prefix: '/api/v1/platform', targetEnvKey: 'cms', stripPrefix: false },
   { prefix: '/api/v1/media', targetEnvKey: 'cms', stripPrefix: false },
   {
     prefix: '/api/v1/graphql',

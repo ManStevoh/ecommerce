@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
@@ -60,6 +61,13 @@ export default function SegmentsPage() {
       <PageHeader
         title="Customer segments"
         description="Group customers by order behavior for targeted campaigns"
+        action={
+          <Link href="/marketing">
+            <Button variant="outline" size="sm">
+              Marketing hub
+            </Button>
+          </Link>
+        }
       />
 
       <Card className="mb-6 border-zinc-200/80 bg-white shadow-sm">

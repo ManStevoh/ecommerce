@@ -15,6 +15,7 @@ const PAGE_TITLES: Record<string, string> = {
   '/settings/branding': 'Branding',
   '/settings/security': 'Security',
   '/cms/pages': 'Landing Pages',
+  '/marketing': 'Marketing',
   '/marketing/campaigns': 'Campaigns',
   '/marketing/coupons': 'Coupons',
   '/marketing/segments': 'Segments',

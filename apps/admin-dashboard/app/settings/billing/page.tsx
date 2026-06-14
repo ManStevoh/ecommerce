@@ -127,7 +127,7 @@ export default function BillingPage() {
               </p>
               <p className="text-zinc-500">{plan.description}</p>
               <ul className="list-inside list-disc text-zinc-600">
-                {(plan.features ?? []).slice(0, 3).map((f) => (
+                {(plan.features ?? []).slice(0, 5).map((f) => (
                   <li key={f}>{f}</li>
                 ))}
               </ul>

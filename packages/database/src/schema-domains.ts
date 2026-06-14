@@ -8,6 +8,9 @@ export const SCHEMA_DOMAINS = {
     'EventOutbox',
     'RefreshToken',
     'Session',
+    'PlatformPage',
+    'PlatformContentBlock',
+    'PlatformSiteSettings',
   ],
   tenant: ['StoreSettings', 'ThemeSettings', 'Domain'],
   catalog: [

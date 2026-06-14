@@ -22,7 +22,12 @@ export const PLAN_CATALOG: Record<SubscriptionPlan, PlanDefinition> = {
     description: 'For new merchants getting started',
     monthlyPriceUsd: 29,
     yearlyPriceUsd: 290,
-    features: ['Up to 100 products', 'Basic analytics', 'Email support'],
+    features: [
+      'Up to 100 products',
+      'Checkout coupons',
+      'Basic analytics',
+      'Email support',
+    ],
     limits: { products: 100, ordersPerMonth: 500, staffAccounts: 2, warehouses: 1 },
   },
   [SubscriptionPlan.GROWTH]: {
@@ -31,7 +36,13 @@ export const PLAN_CATALOG: Record<SubscriptionPlan, PlanDefinition> = {
     description: 'For growing businesses scaling operations',
     monthlyPriceUsd: 79,
     yearlyPriceUsd: 790,
-    features: ['Up to 1,000 products', 'Advanced analytics', 'Priority support'],
+    features: [
+      'Up to 1,000 products',
+      'Coupons & customer segments',
+      'Email campaigns',
+      'Advanced analytics',
+      'Priority support',
+    ],
     limits: { products: 1000, ordersPerMonth: 5000, staffAccounts: 10, warehouses: 3 },
   },
   [SubscriptionPlan.BUSINESS]: {
@@ -40,7 +51,13 @@ export const PLAN_CATALOG: Record<SubscriptionPlan, PlanDefinition> = {
     description: 'For established brands with multi-channel needs',
     monthlyPriceUsd: 199,
     yearlyPriceUsd: 1990,
-    features: ['Unlimited products', 'AI insights', 'Dedicated support'],
+    features: [
+      'Unlimited products',
+      'Scheduled campaigns',
+      'Advanced segments & coupons',
+      'AI insights',
+      'Dedicated support',
+    ],
     limits: { products: -1, ordersPerMonth: 50000, staffAccounts: 50, warehouses: 10 },
   },
   [SubscriptionPlan.ENTERPRISE]: {
@@ -49,7 +66,13 @@ export const PLAN_CATALOG: Record<SubscriptionPlan, PlanDefinition> = {
     description: 'Custom solutions for large organizations',
     monthlyPriceUsd: 0,
     yearlyPriceUsd: 0,
-    features: ['Custom SLA', 'SSO', 'Dedicated infrastructure', 'White-glove onboarding'],
+    features: [
+      'Full marketing suite',
+      'Custom SLA',
+      'SSO',
+      'Dedicated infrastructure',
+      'White-glove onboarding',
+    ],
     limits: { products: -1, ordersPerMonth: -1, staffAccounts: -1, warehouses: -1 },
   },
 };

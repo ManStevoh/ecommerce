@@ -77,7 +77,13 @@ async function main() {
     maxProducts: 1000,
     maxUsers: 10,
     maxStorageMb: 5120,
-    features: ['Up to 1,000 products', 'Advanced analytics', 'Priority support'],
+    features: [
+      'Up to 1,000 products',
+      'Coupons & customer segments',
+      'Email campaigns',
+      'Advanced analytics',
+      'Priority support',
+    ],
   });
 
   await seedPlan({
@@ -89,7 +95,12 @@ async function main() {
     maxProducts: 100,
     maxUsers: 2,
     maxStorageMb: 1024,
-    features: ['Up to 100 products', 'Basic analytics', 'Email support'],
+    features: [
+      'Up to 100 products',
+      'Checkout coupons',
+      'Basic analytics',
+      'Email support',
+    ],
   });
 
   await seedPlan({
@@ -101,7 +112,13 @@ async function main() {
     maxProducts: 999999,
     maxUsers: 50,
     maxStorageMb: 20480,
-    features: ['Unlimited products', 'AI insights', 'Dedicated support'],
+    features: [
+      'Unlimited products',
+      'Scheduled campaigns',
+      'Advanced segments & coupons',
+      'AI insights',
+      'Dedicated support',
+    ],
   });
 
   await seedPlan({
@@ -113,7 +130,12 @@ async function main() {
     maxProducts: 999999,
     maxUsers: 999999,
     maxStorageMb: 102400,
-    features: ['Custom SLA', 'SSO', 'Dedicated infrastructure'],
+    features: [
+      'Full marketing suite',
+      'Custom SLA',
+      'SSO',
+      'Dedicated infrastructure',
+    ],
   });
 
   const tenant = await prisma.tenant.upsert({
@@ -377,6 +399,8 @@ async function main() {
     },
   });
 
+  await seedPlatformMarketingSite();
+
   console.log('Seed complete:');
   console.log('  Super admin:', superAdmin.email, '/ Admin123!');
   console.log('');
@@ -392,8 +416,230 @@ async function main() {
   console.log('  Demo campaign: Welcome back offer (Marketing → Campaigns → Send now)');
   console.log('  Scheduled campaign: Weekend flash sale (auto-sends via cron)');
   console.log('  Product variants: Salmon (3 sizes), Prawns (3 packs) with per-variant stock');
+  console.log('  Platform site: http://localhost:3400 (Super Admin → Marketing site)');
 
   await indexProductsForSearch(tenant.id);
+}
+
+async function seedPlatformMarketingSite() {
+  await prisma.platformSiteSettings.upsert({
+    where: { id: 'default' },
+    update: {},
+    create: {
+      id: 'default',
+      siteName: 'Nexora',
+      tagline: 'Commerce platform for modern brands',
+      primaryCtaLabel: 'Start free trial',
+      primaryCtaHref: 'http://localhost:3200/login',
+      navLinks: [
+        { label: 'Features', href: '#features' },
+        { label: 'Pricing', href: '#pricing' },
+        { label: 'FAQ', href: '#faq' },
+      ],
+      footerColumns: [
+        {
+          title: 'Product',
+          links: [
+            { label: 'Features', href: '#features' },
+            { label: 'Pricing', href: '#pricing' },
+          ],
+        },
+        {
+          title: 'Company',
+          links: [
+            { label: 'About', href: '/about' },
+            { label: 'Contact', href: '#contact' },
+          ],
+        },
+        {
+          title: 'Legal',
+          links: [
+            { label: 'Privacy', href: '/privacy' },
+            { label: 'Terms', href: '/terms' },
+          ],
+        },
+      ],
+      footerNote: '© 2026 Nexora Commerce. All rights reserved.',
+    },
+  });
+
+  const homepageBlocks = [
+    {
+      type: 'HERO' as const,
+      sortOrder: 0,
+      config: {
+        eyebrow: 'Multi-tenant commerce platform',
+        headline: 'Launch and scale your online store',
+        subheadline:
+          'Catalog, orders, payments, marketing, and analytics in one SaaS platform built for retailers and brands.',
+        primaryLabel: 'Start free trial',
+        primaryHref: 'http://localhost:3200/login',
+        secondaryLabel: 'View pricing',
+        secondaryHref: '#pricing',
+      },
+    },
+    {
+      type: 'LOGO_STRIP' as const,
+      sortOrder: 1,
+      config: {
+        title: 'Trusted by growing merchants',
+        logos: ['Fresh Fish Kenya', 'Urban Apparel', 'GreenGrocer', 'Artisan Co.'],
+      },
+    },
+    {
+      type: 'FEATURES_GRID' as const,
+      sortOrder: 2,
+      config: {
+        title: 'Everything you need to sell online',
+        subtitle: 'Standard commerce capabilities out of the box.',
+        items: [
+          {
+            title: 'Product catalog',
+            description: 'Manage products, variants, inventory, and categories.',
+          },
+          {
+            title: 'Orders & fulfillment',
+            description: 'Track orders from checkout through delivery and returns.',
+          },
+          {
+            title: 'Payments',
+            description: 'Accept card and mobile money with configurable gateways.',
+          },
+          {
+            title: 'Marketing',
+            description: 'Coupons, segments, and email campaigns for your store.',
+          },
+          {
+            title: 'Analytics',
+            description: 'Sales dashboards and reporting for store owners.',
+          },
+          {
+            title: 'Multi-tenant SaaS',
+            description: 'Subscription plans, trials, and billing built in.',
+          },
+        ],
+      },
+    },
+    {
+      type: 'STATS_BAR' as const,
+      sortOrder: 3,
+      config: {
+        items: [
+          { value: '99.9%', label: 'Platform uptime SLA' },
+          { value: '15+', label: 'Integrated services' },
+          { value: '4', label: 'Subscription tiers' },
+          { value: '24/7', label: 'Support on Business+' },
+        ],
+      },
+    },
+    {
+      type: 'PRICING' as const,
+      sortOrder: 4,
+      config: {
+        title: 'Simple, transparent pricing',
+        subtitle: 'Start on a trial. Upgrade when you are ready to scale.',
+      },
+    },
+    {
+      type: 'TESTIMONIALS' as const,
+      sortOrder: 5,
+      config: {
+        title: 'Built for operators',
+        items: [
+          {
+            quote:
+              'We moved our fish delivery store to Nexora in a week. Orders, stock, and payments just work.',
+            author: 'Fresh Fish Kenya',
+            role: 'Store owner',
+          },
+          {
+            quote:
+              'The admin dashboard and marketing tools saved us from juggling five different systems.',
+            author: 'Operations lead',
+            role: 'Retail brand',
+          },
+          {
+            quote:
+              'Standard SaaS billing with trials made it easy to onboard new merchant accounts.',
+            author: 'Platform admin',
+            role: 'Marketplace operator',
+          },
+        ],
+      },
+    },
+    {
+      type: 'FAQ' as const,
+      sortOrder: 6,
+      config: {
+        title: 'Frequently asked questions',
+        items: [
+          {
+            q: 'Is there a free trial?',
+            a: 'Yes. New stores start with a 14-day trial on the Growth plan.',
+          },
+          {
+            q: 'Can I use my own domain?',
+            a: 'Yes. Connect a custom domain from your store admin settings.',
+          },
+          {
+            q: 'Which payment methods are supported?',
+            a: 'Card payments via Stripe and mobile money via M-Pesa, configurable per tenant.',
+          },
+          {
+            q: 'Can I customize the storefront?',
+            a: 'Yes. Themes, branding, and CMS landing pages are available per store.',
+          },
+        ],
+      },
+    },
+    {
+      type: 'CTA' as const,
+      sortOrder: 7,
+      config: {
+        title: 'Ready to launch your store?',
+        subtitle: 'Create your account and start selling in minutes.',
+        buttonLabel: 'Start free trial',
+        buttonHref: 'http://localhost:3200/login',
+      },
+    },
+  ];
+
+  await prisma.platformPage.upsert({
+    where: { slug: 'home' },
+    update: {
+      title: 'Nexora — Commerce platform',
+      isHomepage: true,
+      status: 'PUBLISHED',
+      metaTitle: 'Nexora — Launch and scale your online store',
+      metaDescription:
+        'Multi-tenant SaaS commerce platform with catalog, orders, payments, and marketing.',
+      publishedAt: new Date(),
+    },
+    create: {
+      id: 'seed-platform-home',
+      title: 'Nexora — Commerce platform',
+      slug: 'home',
+      isHomepage: true,
+      status: 'PUBLISHED',
+      metaTitle: 'Nexora — Launch and scale your online store',
+      metaDescription:
+        'Multi-tenant SaaS commerce platform with catalog, orders, payments, and marketing.',
+      publishedAt: new Date(),
+    },
+  });
+
+  const homepage = await prisma.platformPage.findUnique({ where: { slug: 'home' } });
+  if (homepage) {
+    await prisma.platformContentBlock.deleteMany({ where: { pageId: homepage.id } });
+    await prisma.platformContentBlock.createMany({
+      data: homepageBlocks.map((block) => ({
+        pageId: homepage.id,
+        type: block.type,
+        sortOrder: block.sortOrder,
+        config: block.config,
+      })),
+    });
+  }
 }
 
 async function indexProductsForSearch(tenantId: string) {

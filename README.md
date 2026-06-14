@@ -33,6 +33,7 @@ Full architecture: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 | Support tickets (persisted) | ✅ |
 | Observability (correlation IDs, structured logs) | ✅ |
 | Super-admin + store admin + storefront | ✅ |
+| **Platform marketing site** (CMS from super-admin) | ✅ |
 | Prisma schema (30 models) + migrations | ✅ |
 | K8s base manifests | ✅ |
 
@@ -91,6 +92,7 @@ NEXT_PUBLIC_TENANT_ID=<from-seed-output>
 | Storefront | http://localhost:3100 |
 | Store admin | http://localhost:3200/login |
 | Super admin | http://localhost:3300/login |
+| **Platform site** (pre-subscribe landing) | http://localhost:3400 |
 
 ### Seed credentials
 

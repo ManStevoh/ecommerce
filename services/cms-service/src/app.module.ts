@@ -6,6 +6,7 @@ import { TenantModule } from './common/tenant/tenant.module';
 import { HealthModule } from './health/health.module';
 import { PagesModule } from './pages/pages.module';
 import { MediaModule } from './media/media.module';
+import { PlatformModule } from './platform/platform.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { MediaModule } from './media/media.module';
     HealthModule,
     PagesModule,
     MediaModule,
+    PlatformModule,
   ],
 })
 export class AppModule {}

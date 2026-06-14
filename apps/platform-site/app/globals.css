@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-white text-slate-900 antialiased;
+}
+
+.prose-platform {
+  @apply max-w-3xl text-base leading-7 text-slate-600;
+}
+
+.section-shell {
+  @apply mx-auto max-w-6xl px-6;
+}
+
+.section-title {
+  @apply text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl;
+}
+
+.section-lead {
+  @apply mt-4 max-w-2xl text-lg text-slate-600;
+}

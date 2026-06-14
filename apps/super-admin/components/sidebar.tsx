@@ -10,12 +10,14 @@ import {
   Shield,
   Wallet,
   ScrollText,
+  Globe,
 } from "lucide-react";
 import { cn } from "@nexora/ui";
 
 const navItems = [
   { href: "/", label: "Tenants", icon: Building2 },
   { href: "/plans", label: "Plans", icon: Layers },
+  { href: "/site", label: "Marketing site", icon: Globe },
   { href: "/subscriptions", label: "Subscriptions", icon: CreditCard },
   { href: "/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/payments", label: "Payment Gateway", icon: Wallet },

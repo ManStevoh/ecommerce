@@ -15,6 +15,7 @@ export const PLATFORM_PATHS: RegExp[] = [
   /^\/api\/v1\/plans\/admin\/all$/,
   /^\/api\/v1\/plans\/admin$/,
   /^\/api\/v1\/plans\/admin\/[^/]+$/,
+  /^\/api\/v1\/platform\//,
   /^\/api\/v1\/graphql$/,
 ];
 
@@ -41,6 +42,8 @@ export const PUBLIC_PATHS: RegExp[] = [
   /^\/api\/v1\/webhooks\//,
   /^\/api\/v1\/providers$/,
   /^\/api\/v1\/pages\/by-slug\//,
+  /^\/api\/v1\/platform\/pages\/public\//,
+  /^\/api\/v1\/platform\/site\/public$/,
   /^\/api\/v1\/ai\/recommendations$/,
   /^\/api\/v1\/ai\/tickets\/classify$/,
   /^\/api\/v1\/reviews$/,

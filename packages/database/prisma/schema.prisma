@@ -105,6 +105,9 @@ enum ContentBlockType {
   NEWSLETTER
   RICH_TEXT
   CUSTOM
+  FEATURES_GRID
+  STATS_BAR
+  LOGO_STRIP
 }
 
 enum AuditAction {
@@ -805,4 +808,55 @@ model EventOutbox {
   @@index([topic])
   @@index([createdAt])
   @@map("event_outbox")
+}
+
+model PlatformPage {
+  id              String     @id @default(cuid())
+  title           String
+  slug            String     @unique
+  isHomepage      Boolean    @default(false) @map("is_homepage")
+  status          PageStatus @default(DRAFT)
+  metaTitle       String?    @map("meta_title")
+  metaDescription String?    @map("meta_description")
+  ogImage         String?    @map("og_image")
+  publishedAt     DateTime?  @map("published_at")
+  createdAt       DateTime   @default(now()) @map("created_at")
+  updatedAt       DateTime   @updatedAt @map("updated_at")
+
+  blocks PlatformContentBlock[]
+
+  @@index([status])
+  @@index([isHomepage])
+  @@map("platform_pages")
+}
+
+model PlatformContentBlock {
+  id        String           @id @default(cuid())
+  pageId    String           @map("page_id")
+  type      ContentBlockType
+  sortOrder Int              @default(0) @map("sort_order")
+  config    Json             @default("{}")
+  createdAt DateTime         @default(now()) @map("created_at")
+  updatedAt DateTime         @updatedAt @map("updated_at")
+
+  page PlatformPage @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@index([pageId])
+  @@map("platform_content_blocks")
+}
+
+model PlatformSiteSettings {
+  id              String   @id @default("default")
+  siteName        String   @default("Nexora") @map("site_name")
+  tagline         String?
+  logoUrl         String?  @map("logo_url")
+  faviconUrl      String?  @map("favicon_url")
+  primaryCtaLabel String?  @map("primary_cta_label")
+  primaryCtaHref  String?  @map("primary_cta_href")
+  navLinks        Json     @default("[]") @map("nav_links")
+  footerColumns   Json     @default("[]") @map("footer_columns")
+  footerNote      String?  @map("footer_note")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@map("platform_site_settings")
 }

@@ -235,6 +235,10 @@ export default function SettingsPage() {
           <Link href="/settings/branding" className="text-indigo-600 hover:underline">
             Branding page
           </Link>
+          . Manage coupons, campaigns, and segments in{" "}
+          <Link href="/marketing" className="text-indigo-600 hover:underline">
+            Marketing
+          </Link>
           .
         </p>
       </div>
