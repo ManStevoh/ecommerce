@@ -65,6 +65,13 @@ export function ProductGrid() {
     };
   }, [isSidebarOpen]);
 
+  // Listen to mobile menu trigger from header
+  useEffect(() => {
+    const handleOpen = () => setIsSidebarOpen(true);
+    window.addEventListener("open-category-sidebar", handleOpen);
+    return () => window.removeEventListener("open-category-sidebar", handleOpen);
+  }, []);
+
   if (isLoading) {
     return (
       <div className="flex flex-col md:flex-row gap-6 md:gap-8 animate-pulse">
@@ -178,22 +185,12 @@ export function ProductGrid() {
 
       {/* Grid Content Area */}
       <div className="flex-1 space-y-6">
-        {/* Mobile Header with Categories trigger button */}
-        <div className="flex items-center justify-between md:hidden border border-zinc-200/60 bg-white/40 p-3 rounded-2xl dark:border-zinc-800/60 dark:bg-zinc-950/40 backdrop-blur-md">
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setIsSidebarOpen(true)}
-              className="flex items-center gap-2 rounded-xl border border-zinc-200/80 bg-white px-3 py-1.5 text-xs font-semibold text-zinc-700 shadow-sm transition-all hover:bg-zinc-50 dark:border-zinc-800/80 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-850"
-              aria-label="Filter Categories"
-            >
-              <Menu className="h-4 w-4" />
-              <span>Categories</span>
-            </button>
-            <span className="text-[10px] sm:text-xs font-medium text-zinc-500">
-              Active: <span className="font-semibold text-theme-accent">{activeCategory}</span>
-            </span>
-          </div>
-          <span className="text-[10px] sm:text-xs font-semibold text-zinc-400">
+        {/* Mobile Header (minimal indicator) */}
+        <div className="flex items-center justify-between md:hidden border-b border-zinc-200/60 pb-2.5 dark:border-zinc-800/60">
+          <span className="text-xs font-semibold text-zinc-500">
+            Category: <span className="font-bold text-theme-accent">{activeCategory}</span>
+          </span>
+          <span className="text-xs font-semibold text-zinc-400">
             {filtered.length} Items
           </span>
         </div>

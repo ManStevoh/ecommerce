@@ -5,6 +5,7 @@ const TENANT_SUBDOMAIN =
   process.env.NEXT_PUBLIC_TENANT_SUBDOMAIN ?? "freshfish";
 
 export type CustomColors = {
+  themeMode?: "light" | "dark" | "system";
   backgroundColor?: string;
   textColor?: string;
   surfaceColor?: string;

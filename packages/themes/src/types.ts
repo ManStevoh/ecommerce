@@ -35,6 +35,7 @@ export type ThemePreset = {
 };
 
 export type CustomColors = {
+  themeMode?: 'light' | 'dark' | 'system';
   backgroundColor?: string;
   textColor?: string;
   surfaceColor?: string;

@@ -2,12 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ShoppingBag, Sparkles, Heart, User } from "lucide-react";
+import { ShoppingBag, Sparkles, Heart, User, Menu } from "lucide-react";
 import { Badge } from "@nexora/ui";
 import type { LayoutVariant } from "@nexora/themes";
-import { ThemeToggle } from "./theme-toggle";
 import { AiSearchBar } from "./ai-search-bar";
-import { MobileNav } from "./mobile-nav";
 import { useCartCount } from "@/store/cart";
 import { useWishlistCount } from "@/store/wishlist";
 
@@ -50,24 +48,37 @@ export function Header({
           scrolled ? "py-2.5" : "py-3.5"
         } transition-all duration-300`}
       >
-        {/* Logo */}
-        <Link href="/" className="group flex items-center gap-2.5 shrink-0">
-          {logoUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={logoUrl}
-              alt=""
-              className="h-8 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
-            />
-          ) : (
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 transition-transform duration-300 group-hover:scale-110">
-              <Sparkles className="h-4 w-4 text-white" />
-            </div>
-          )}
-          <span className="hidden min-[390px]:inline text-lg font-bold tracking-tight">
-            {tenantName}
-          </span>
-        </Link>
+        {/* Left Side: Category Hamburger (mobile) + Logo */}
+        <div className="flex items-center gap-3 shrink-0">
+          {/* Mobile Category Trigger */}
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new CustomEvent("open-category-sidebar"))}
+            className="group relative flex h-9 w-9 items-center justify-center rounded-full border border-zinc-200/80 bg-white/40 shadow-sm backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-800/80 dark:bg-zinc-950/40 dark:hover:border-zinc-700 dark:hover:bg-zinc-900 md:hidden"
+            aria-label="Open categories menu"
+          >
+            <Menu className="h-4 w-4 text-zinc-500 dark:text-zinc-400 group-hover:scale-110 transition-transform duration-300" />
+          </button>
+
+          {/* Logo */}
+          <Link href="/" className="group flex items-center gap-2.5">
+            {logoUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={logoUrl}
+                alt=""
+                className="h-8 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+              />
+            ) : (
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 transition-transform duration-300 group-hover:scale-110">
+                <Sparkles className="h-4 w-4 text-white" />
+              </div>
+            )}
+            <span className="hidden min-[390px]:inline text-lg font-bold tracking-tight">
+              {tenantName}
+            </span>
+          </Link>
+        </div>
 
         {/* Search (desktop/tablet) */}
         <div className="hidden flex-1 items-center gap-4 px-4 md:px-8 md:flex md:max-w-xl lg:max-w-2xl">
@@ -120,15 +131,10 @@ export function Header({
               {cartCount}
             </span>
           </Link>
-
-          <div className="mx-1 h-5 w-px bg-zinc-200 dark:bg-zinc-800" />
-
-          <ThemeToggle />
         </nav>
 
         {/* Mobile controls */}
         <div className="flex items-center gap-1.5 md:hidden">
-          <ThemeToggle />
 
           {/* Favorites Button */}
           <Link
@@ -170,8 +176,6 @@ export function Header({
           >
             <User className="h-4 w-4 text-zinc-500 dark:text-zinc-400 group-hover:scale-110 transition-transform duration-300" />
           </Link>
-
-          <MobileNav />
         </div>
       </div>
 

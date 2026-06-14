@@ -26,17 +26,22 @@ export default async function RootLayout({
   const tenant = await getTenantFromHeaders();
   const resolved = resolveTheme(tenant.theme);
 
+  const themeMode = tenant.theme.customColors?.themeMode ?? "system";
+  const htmlClass = themeMode === "dark" ? "dark" : undefined;
+  const forcedTheme = themeMode === "system" ? undefined : themeMode;
+  const defaultTheme = themeMode === "system" ? "system" : themeMode;
+
   return (
     <html
       lang="en"
       suppressHydrationWarning
-      className={tenant.theme.darkMode ? "dark" : undefined}
+      className={htmlClass}
     >
       <head>
         <ThemeFontLink fontFamily={tenant.theme.fontFamily} />
       </head>
       <body className="font-sans antialiased">
-        <ThemeProvider defaultTheme={tenant.theme.darkMode ? "dark" : "system"}>
+        <ThemeProvider defaultTheme={defaultTheme} forcedTheme={forcedTheme}>
           <QueryProvider>
             <TenantBranding theme={tenant.theme}>
               <LayoutShell

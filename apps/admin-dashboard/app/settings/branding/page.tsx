@@ -34,6 +34,7 @@ export default function BrandingPage() {
   const [logoUrl, setLogoUrl] = useState("");
   const [faviconUrl, setFaviconUrl] = useState("");
   const [darkMode, setDarkMode] = useState(false);
+  const [themeMode, setThemeMode] = useState<"light" | "dark" | "system">("system");
   const [customCss, setCustomCss] = useState("");
 
   // Custom Colors - Light Mode
@@ -76,6 +77,7 @@ export default function BrandingPage() {
         setCustomCss(theme.customCss ?? "");
 
         const cc = theme.customColors ?? {};
+        if (cc.themeMode) setThemeMode(cc.themeMode as any);
         if (cc.backgroundColor) setBackgroundColor(cc.backgroundColor);
         if (cc.textColor) setTextColor(cc.textColor);
         if (cc.surfaceColor) setSurfaceColor(cc.surfaceColor);
@@ -129,6 +131,7 @@ export default function BrandingPage() {
         darkMode,
         customCss: customCss || undefined,
         customColors: {
+          themeMode,
           backgroundColor,
           textColor,
           surfaceColor,
@@ -242,14 +245,19 @@ export default function BrandingPage() {
                     <Label htmlFor="font">Font Family</Label>
                     <Input id="font" value={fontFamily} onChange={(e) => setFontFamily(e.target.value)} className="mt-1.5" />
                   </div>
-                  <label className="flex items-center gap-2 text-sm">
-                    <input
-                      type="checkbox"
-                      checked={darkMode}
-                      onChange={(e) => setDarkMode(e.target.checked)}
-                    />
-                    Default to dark mode on storefront
-                  </label>
+                  <div>
+                    <Label htmlFor="theme-mode">Theme Mode Enforcement</Label>
+                    <select
+                      id="theme-mode"
+                      value={themeMode}
+                      onChange={(e) => setThemeMode(e.target.value as any)}
+                      className="mt-1.5 flex h-10 w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-950 focus-visible:ring-offset-2 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50"
+                    >
+                      <option value="system">System Auto (Light Default / Dark on Device Request)</option>
+                      <option value="light">Enforce Light Mode (Always Light)</option>
+                      <option value="dark">Enforce Dark Mode (Always Dark)</option>
+                    </select>
+                  </div>
                 </div>
 
                 <div className="space-y-4">

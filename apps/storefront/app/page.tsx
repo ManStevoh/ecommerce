@@ -1,6 +1,5 @@
 import { ProductGrid } from "@/components/product-grid";
 import { RecommendedProducts } from "@/components/recommended-products";
-import { NewsletterSignup } from "@/components/newsletter-signup";
 import { ScrollAnimator } from "@/components/scroll-animator";
 import { getTenantFromHeaders } from "@/lib/tenant";
 
@@ -26,9 +25,6 @@ export default async function HomePage() {
 
       {/* Recommendations */}
       <RecommendedProducts />
-
-      {/* Newsletter */}
-      <NewsletterSignup />
     </div>
   );
 }
