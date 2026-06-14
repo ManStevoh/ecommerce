@@ -151,3 +151,24 @@ chmod +x scripts/update-platform.sh
 ./scripts/update-platform.sh
 ```
 
+### 5.4: Fully Automate Deployment via Git Polling (Cron)
+If you do not have Admin permissions on the GitHub repository to configure GitHub Actions/Runners, you can automate deployments directly on the server by running a background cron job that polls GitHub for updates.
+
+A polling script is located at [scripts/poll-deploy.sh](file:///home/staticlumen/Projects/ecommerce/scripts/poll-deploy.sh).
+
+#### Setup Instructions on the Server:
+1. Make sure the polling script is executable:
+   ```bash
+   chmod +x /home/staticlumen/Websites/ecommerce/scripts/poll-deploy.sh
+   ```
+2. Open your user's crontab scheduler:
+   ```bash
+   crontab -e
+   ```
+3. Add the following line to check for updates every 5 minutes (adjust the schedule as needed):
+   ```cron
+   */5 * * * * /bin/bash /home/staticlumen/Websites/ecommerce/scripts/poll-deploy.sh >> /home/staticlumen/Websites/ecommerce/deploy.log 2>&1
+   ```
+4. Save and exit. The deployment status and updates will be logged to `/home/staticlumen/Websites/ecommerce/deploy.log`.
+
+
