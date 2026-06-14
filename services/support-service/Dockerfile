@@ -4,15 +4,17 @@ WORKDIR /app
 
 FROM base AS deps
 COPY package.json pnpm-workspace.yaml ./
+COPY packages ./packages
 COPY services/support-service/package.json ./services/support-service/
-RUN pnpm install --filter @nexora/support-service
+RUN pnpm install --filter @nexora/support-service...
 
 FROM base AS build
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/services/support-service/node_modules ./services/support-service/node_modules
 COPY package.json pnpm-workspace.yaml ./
+COPY packages ./packages
 COPY services/support-service ./services/support-service
-RUN pnpm --filter @nexora/support-service build
+RUN pnpm --filter @nexora/support-service... build
 
 FROM node:20-alpine AS runner
 WORKDIR /app

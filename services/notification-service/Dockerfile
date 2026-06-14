@@ -4,15 +4,17 @@ WORKDIR /app
 
 FROM base AS deps
 COPY package.json pnpm-workspace.yaml ./
+COPY packages ./packages
 COPY services/notification-service/package.json ./services/notification-service/
-RUN pnpm install --filter @nexora/notification-service
+RUN pnpm install --filter @nexora/notification-service...
 
 FROM base AS build
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/services/notification-service/node_modules ./services/notification-service/node_modules
 COPY package.json pnpm-workspace.yaml ./
+COPY packages ./packages
 COPY services/notification-service ./services/notification-service
-RUN pnpm --filter @nexora/notification-service build
+RUN pnpm --filter @nexora/notification-service... build
 
 FROM node:20-alpine AS runner
 WORKDIR /app

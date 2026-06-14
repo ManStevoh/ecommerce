@@ -1,0 +1,101 @@
+version: '3.8'
+
+services:
+  # --- DATABASES & UTILITIES ---
+  postgres:
+    image: postgres:16-alpine
+    container_name: nexora-postgres-prod
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${DB_USER:-nexora}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-nexora_secret}
+      POSTGRES_DB: ${DB_NAME:-nexora}
+    volumes:
+      - postgres_prod_data:/var/lib/postgresql/data
+    networks:
+      - nexora-prod-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-nexora}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: nexora-redis-prod
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_prod_data:/data
+    networks:
+      - nexora-prod-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.11
+    container_name: nexora-meilisearch-prod
+    restart: always
+    ports:
+      - "7700:7700"
+    environment:
+      MEILI_MASTER_KEY: ${MEILISEARCH_KEY:-nexora_meili_master_key}
+      MEILI_ENV: production
+    volumes:
+      - meilisearch_prod_data:/meili_data
+    networks:
+      - nexora-prod-net
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:7700/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # --- MONOREPO PLATFORM CONTAINER ---
+  platform:
+    image: node:20-alpine
+    container_name: nexora-platform-prod
+    restart: always
+    working_dir: /app
+    ports:
+      - "3000:3000" # API Gateway
+      - "3100:3100" # Storefront
+      - "3200:3200" # Admin Dashboard
+      - "3300:3300" # Super Admin Panel
+    volumes:
+      - .:/app
+    command: sh -c "corepack enable && pnpm install && pnpm db:generate && pnpm build && pnpm turbo run dev --parallel --concurrency=40"
+    environment:
+      DATABASE_URL: postgresql://${DB_USER:-nexora}:${DB_PASSWORD:-nexora_secret}@postgres:5432/${DB_NAME:-nexora}?schema=public
+      REDIS_URL: redis://redis:6379
+      MEILISEARCH_HOST: http://meilisearch:7700
+      MEILISEARCH_API_KEY: ${MEILISEARCH_KEY:-nexora_meili_master_key}
+      NEXT_PUBLIC_API_URL: https://api-ecommerce.kenwafula.cv
+      NEXT_PUBLIC_TENANT_ID: cmqc18vyv0004te9z43bepp67
+      NEXT_PUBLIC_TENANT_SUBDOMAIN: freshfish
+      PORT: 3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      meilisearch:
+        condition: service_healthy
+    networks:
+      - nexora-prod-net
+
+networks:
+  nexora-prod-net:
+    driver: bridge
+
+volumes:
+  postgres_prod_data:
+  redis_prod_data:
+  meilisearch_prod_data:
