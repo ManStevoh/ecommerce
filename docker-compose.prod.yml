@@ -78,7 +78,7 @@ services:
       MEILISEARCH_HOST: http://meilisearch:7700
       MEILISEARCH_API_KEY: ${MEILISEARCH_KEY:-nexora_meili_master_key}
       NEXT_PUBLIC_API_URL: https://api-ecommerce.kenwafula.cv
-      NEXT_PUBLIC_TENANT_ID: cmqc18vyv0004te9z43bepp67
+      NEXT_PUBLIC_TENANT_ID: cmqdnrw450004pe46nivb87yy
       NEXT_PUBLIC_TENANT_SUBDOMAIN: freshfish
       PORT: 3000
     depends_on:
