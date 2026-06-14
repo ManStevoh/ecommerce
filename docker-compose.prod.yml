@@ -80,6 +80,7 @@ services:
       NEXT_PUBLIC_API_URL: https://api-ecommerce.kenwafula.cv
       NEXT_PUBLIC_TENANT_ID: cmqdnrw450004pe46nivb87yy
       NEXT_PUBLIC_TENANT_SUBDOMAIN: freshfish
+      CORS_ORIGINS: "http://localhost:3000,http://localhost:3100,http://localhost:3200,*.kenwafula.cv"
       PORT: 3000
     depends_on:
       postgres:

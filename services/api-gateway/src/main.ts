@@ -15,7 +15,27 @@ async function bootstrap(): Promise<void> {
   app.use(helmet());
 
   app.enableCors({
-    origin: config.corsOrigins,
+    origin: (origin, callback) => {
+      const allowed = config.corsOrigins;
+      if (allowed.includes('*') || !origin) {
+        callback(null, true);
+      } else {
+        const isAllowed = allowed.some((domain) => {
+          if (domain === origin) return true;
+          if (domain.startsWith('*.')) {
+            const suffix = domain.slice(2);
+            try {
+              const originHost = new URL(origin).hostname;
+              return originHost === suffix || originHost.endsWith('.' + suffix);
+            } catch {
+              return false;
+            }
+          }
+          return false;
+        });
+        callback(null, isAllowed);
+      }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: [
