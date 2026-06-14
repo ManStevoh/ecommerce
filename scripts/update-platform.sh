@@ -8,8 +8,9 @@ echo "========================================="
 echo "  Nexora Platform - Deployment Update    "
 echo "========================================="
 
-echo "Step 1: Pulling latest changes from origin main..."
-git pull origin main
+echo "Step 1: Resetting to latest changes from origin main..."
+git fetch origin main
+git reset --hard origin/main
 
 echo "Step 2: Syncing dependencies and database schemas..."
 docker compose -f docker-compose.prod.yml run --rm platform sh -c "corepack enable && pnpm install && pnpm db:push"
