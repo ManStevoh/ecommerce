@@ -1,6 +1,7 @@
 import type { LayoutVariant } from "@nexora/themes";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { AnnouncementBar } from "@/components/announcement-bar";
 
 const MAIN_CLASS: Record<LayoutVariant, string> = {
   classic: "mx-auto max-w-7xl px-6 py-8",
@@ -23,6 +24,7 @@ export function LayoutShell({
 }: Props) {
   return (
     <>
+      <AnnouncementBar />
       <Header
         tenantName={tenantName}
         logoUrl={logoUrl}

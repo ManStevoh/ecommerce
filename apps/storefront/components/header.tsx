@@ -1,7 +1,8 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ShoppingBag, Sparkles } from "lucide-react";
+import { ShoppingBag, Sparkles, Heart, User } from "lucide-react";
 import { Badge } from "@nexora/ui";
 import type { LayoutVariant } from "@nexora/themes";
 import { ThemeToggle } from "./theme-toggle";
@@ -19,93 +20,129 @@ export function Header({
   variant?: LayoutVariant;
 }) {
   const cartCount = useCartCount();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   const widthClass =
     variant === "minimal"
       ? "max-w-5xl"
       : variant === "editorial"
         ? "max-w-6xl"
         : "max-w-7xl";
-  const paddingClass = variant === "minimal" ? "py-2" : "py-4";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-zinc-200/50 bg-white/70 backdrop-blur-2xl dark:border-zinc-800/50 dark:bg-zinc-950/70">
-      <div className={`mx-auto flex ${widthClass} flex-col gap-4 px-6 ${paddingClass} lg:flex-row lg:items-center lg:justify-between`}>
-        <div className="flex items-center justify-between gap-4">
-          <Link href="/" className="flex items-center gap-2">
-            {logoUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={logoUrl} alt="" className="h-8 w-auto object-contain" />
-            ) : (
-              <Sparkles className="h-5 w-5 text-amber-500" />
-            )}
-            <span className="text-lg font-semibold tracking-tight">
-              {tenantName}
-            </span>
-          </Link>
-          <div className="flex items-center gap-2 lg:hidden">
-            <ThemeToggle />
-            <MobileNav />
-            <Link
-              href="/cart"
-              className="relative rounded-lg p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800"
-            >
-              <ShoppingBag className="h-5 w-5" />
-              {cartCount > 0 && (
-                <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-amber-500 text-xs font-bold text-white">
-                  {cartCount}
-                </span>
-              )}
-            </Link>
-          </div>
-        </div>
+    <header
+      className={`sticky top-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? "border-b border-zinc-200/60 bg-white/80 shadow-sm backdrop-blur-2xl dark:border-zinc-800/60 dark:bg-zinc-950/80"
+          : "border-b border-transparent bg-white/50 backdrop-blur-xl dark:bg-zinc-950/50"
+      }`}
+    >
+      <div
+        className={`mx-auto flex ${widthClass} items-center justify-between gap-4 px-6 ${
+          scrolled ? "py-2.5" : "py-3.5"
+        } transition-all duration-300`}
+      >
+        {/* Logo */}
+        <Link href="/" className="group flex items-center gap-2.5 shrink-0">
+          {logoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={logoUrl}
+              alt=""
+              className="h-8 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+            />
+          ) : (
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 transition-transform duration-300 group-hover:scale-110">
+              <Sparkles className="h-4 w-4 text-white" />
+            </div>
+          )}
+          <span className="text-lg font-bold tracking-tight">
+            {tenantName}
+          </span>
+        </Link>
 
-        <div className="flex flex-1 items-center gap-4 lg:max-w-xl">
+        {/* Search (desktop) */}
+        <div className="hidden flex-1 items-center gap-4 px-8 lg:flex lg:max-w-xl">
           <AiSearchBar />
         </div>
 
-        <nav className="hidden items-center gap-6 lg:flex">
-          <Link
-            href="/"
-            className="text-sm font-medium text-zinc-600 transition hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
-          >
-            Shop
-          </Link>
-          <Link
-            href="/register"
-            className="text-sm font-medium text-zinc-600 transition hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
-          >
-            Open a store
-          </Link>
-          <Link
-            href="/support"
-            className="text-sm font-medium text-zinc-600 transition hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
-          >
-            Support
-          </Link>
+        {/* Desktop Nav */}
+        <nav className="hidden items-center gap-1 lg:flex">
+          {[
+            { href: "/", label: "Shop" },
+            { href: "/register", label: "Open a store" },
+            { href: "/support", label: "Support" },
+          ].map(({ href, label }) => (
+            <Link
+              key={href}
+              href={href}
+              className="nav-link-underline rounded-lg px-3 py-2 text-sm font-medium text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+            >
+              {label}
+            </Link>
+          ))}
+
+          <div className="mx-2 h-5 w-px bg-zinc-200 dark:bg-zinc-800" />
+
           <Link
             href="/login"
-            className="text-sm font-medium text-zinc-600 transition hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+            className="rounded-lg p-2 text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"
+            aria-label="Account"
           >
-            Account
+            <User className="h-[18px] w-[18px]" />
           </Link>
+
           <Link
             href="/wishlist"
-            className="text-sm font-medium text-zinc-600 transition hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+            className="rounded-lg p-2 text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"
+            aria-label="Wishlist"
           >
-            Wishlist
+            <Heart className="h-[18px] w-[18px]" />
           </Link>
+
           <Link
             href="/cart"
-            className="relative flex items-center gap-2 text-sm font-medium text-zinc-600 transition hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+            className="relative rounded-lg p-2 text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"
+            aria-label="Cart"
           >
-            <ShoppingBag className="h-4 w-4" />
-            Cart
+            <ShoppingBag className="h-[18px] w-[18px]" />
             {cartCount > 0 && (
-              <Badge variant="warning">{cartCount}</Badge>
+              <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-theme-accent text-[10px] font-bold text-white animate-scale-in">
+                {cartCount}
+              </span>
             )}
           </Link>
+
           <ThemeToggle />
         </nav>
+
+        {/* Mobile controls */}
+        <div className="flex items-center gap-1 lg:hidden">
+          <ThemeToggle />
+          <Link
+            href="/cart"
+            className="relative rounded-lg p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+          >
+            <ShoppingBag className="h-5 w-5" />
+            {cartCount > 0 && (
+              <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-theme-accent text-[10px] font-bold text-white">
+                {cartCount}
+              </span>
+            )}
+          </Link>
+          <MobileNav />
+        </div>
+      </div>
+
+      {/* Mobile search */}
+      <div className="border-t border-zinc-100 px-4 pb-3 dark:border-zinc-800/50 lg:hidden">
+        <AiSearchBar />
       </div>
     </header>
   );
