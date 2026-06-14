@@ -64,7 +64,7 @@ export function Header({
               <Sparkles className="h-4 w-4 text-white" />
             </div>
           )}
-          <span className="text-lg font-bold tracking-tight">
+          <span className="hidden min-[390px]:inline text-lg font-bold tracking-tight">
             {tenantName}
           </span>
         </Link>
@@ -127,8 +127,28 @@ export function Header({
         </nav>
 
         {/* Mobile controls */}
-        <div className="flex items-center gap-2 md:hidden">
+        <div className="flex items-center gap-1.5 md:hidden">
           <ThemeToggle />
+
+          {/* Favorites Button */}
+          <Link
+            href="/wishlist"
+            className="group relative flex h-9 w-9 items-center justify-center rounded-full border border-zinc-200/80 bg-white/40 shadow-sm backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-800/80 dark:bg-zinc-950/40 dark:hover:border-zinc-700 dark:hover:bg-zinc-900"
+            aria-label="Wishlist"
+          >
+            <Heart className={`h-4 w-4 transition-transform duration-300 group-hover:scale-110 ${
+              wishlistCount > 0 
+                ? "text-red-500 fill-red-500 animate-pulse" 
+                : "text-zinc-500 dark:text-zinc-400"
+            }`} />
+            {wishlistCount > 0 && (
+              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[8px] font-bold text-white shadow-sm animate-scale-in">
+                {wishlistCount}
+              </span>
+            )}
+          </Link>
+
+          {/* Cart Button */}
           <Link
             href="/cart"
             className="group relative flex h-9 w-9 items-center justify-center rounded-full border border-zinc-200/80 bg-white/40 shadow-sm backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-800/80 dark:bg-zinc-950/40 dark:hover:border-zinc-700 dark:hover:bg-zinc-900"
@@ -136,17 +156,27 @@ export function Header({
           >
             <ShoppingBag className="h-4 w-4 text-zinc-500 dark:text-zinc-400 group-hover:scale-110 transition-transform duration-300" />
             {cartCount > 0 && (
-              <span className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-theme-accent text-[9px] font-bold text-white shadow-sm animate-scale-in">
+              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-theme-accent text-[8px] font-bold text-white shadow-sm animate-scale-in">
                 {cartCount}
               </span>
             )}
           </Link>
+
+          {/* Account Button */}
+          <Link
+            href="/login"
+            className="group relative flex h-9 w-9 items-center justify-center rounded-full border border-zinc-200/80 bg-white/40 shadow-sm backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-800/80 dark:bg-zinc-950/40 dark:hover:border-zinc-700 dark:hover:bg-zinc-900"
+            aria-label="Account"
+          >
+            <User className="h-4 w-4 text-zinc-500 dark:text-zinc-400 group-hover:scale-110 transition-transform duration-300" />
+          </Link>
+
           <MobileNav />
         </div>
       </div>
 
       {/* Mobile search */}
-      <div className="border-t border-zinc-100 px-4 pb-3 dark:border-zinc-800/50 md:hidden">
+      <div className="border-t border-zinc-150 px-4 py-2.5 bg-white/50 dark:bg-zinc-950/50 backdrop-blur-md md:hidden">
         <AiSearchBar />
       </div>
     </header>

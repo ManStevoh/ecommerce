@@ -32,15 +32,14 @@ export function MobileNav() {
 
   return (
     <>
-      <Button
-        variant="ghost"
-        size="icon"
-        className="lg:hidden"
+      <button
+        type="button"
+        className="group relative flex h-9 w-9 items-center justify-center rounded-full border border-zinc-200/80 bg-white/40 shadow-sm backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-800/80 dark:bg-zinc-950/40 dark:hover:border-zinc-700 dark:hover:bg-zinc-900 md:hidden"
         aria-label="Open menu"
         onClick={() => setOpen(true)}
       >
-        <Menu className="h-5 w-5" />
-      </Button>
+        <Menu className="h-4 w-4 text-zinc-500 dark:text-zinc-400 group-hover:scale-110 transition-transform duration-300" />
+      </button>
 
       {/* Backdrop */}
       <div
