@@ -81,6 +81,8 @@
     scroll-behavior: smooth;
     background-color: #fafafa;
     transition: background-color 0.3s ease;
+    overflow-x: hidden;
+    max-width: 100%;
   }
 
   html.dark {
@@ -100,6 +102,8 @@
   body {
     @apply antialiased;
     background-color: transparent;
+    overflow-x: hidden;
+    max-width: 100%;
   }
 
   /* Custom Scrollbar */

@@ -54,8 +54,8 @@ export function MobileNav() {
       {/* Drawer */}
       <div
         className={cn(
-          "fixed inset-y-0 right-0 z-[70] w-80 border-l border-zinc-200/50 bg-white/95 backdrop-blur-2xl shadow-2xl transition-transform duration-300 ease-out-expo dark:border-zinc-800/50 dark:bg-zinc-950/95 lg:hidden",
-          open ? "translate-x-0" : "translate-x-full",
+          "fixed inset-y-0 right-0 z-[70] w-80 border-l border-zinc-200/50 bg-white/95 backdrop-blur-2xl shadow-2xl transition-all duration-300 ease-out-expo dark:border-zinc-800/50 dark:bg-zinc-950/95 lg:hidden",
+          open ? "translate-x-0 visible opacity-100" : "translate-x-full invisible opacity-0",
         )}
       >
         <div className="flex h-full flex-col">
