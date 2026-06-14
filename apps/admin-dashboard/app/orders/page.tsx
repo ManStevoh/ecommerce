@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Fragment } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Alert,
@@ -27,6 +27,7 @@ import {
   updateOrderStatus,
   createShipment,
   refundOrder,
+  approvePayment,
 } from '@/lib/api';
 
 function statusVariant(status: string) {
@@ -48,6 +49,12 @@ export default function OrdersPage() {
   const [shipOrderId, setShipOrderId] = useState<string | null>(null);
   const [trackingNumber, setTrackingNumber] = useState('');
   const [carrier, setCarrier] = useState('manual');
+  const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
+
+  const approvePaymentMutation = useMutation({
+    mutationFn: (paymentId: string) => approvePayment(paymentId),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['orders'] }),
+  });
 
   const confirmMutation = useMutation({
     mutationFn: (orderId: string) => updateOrderStatus(orderId, 'CONFIRMED'),
@@ -185,80 +192,157 @@ export default function OrdersPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {orders.map((order) => (
-                  <TableRow key={order.id}>
-                    <TableCell className="font-medium">{order.orderNumber}</TableCell>
-                    <TableCell>{order.customer}</TableCell>
-                    <TableCell className="text-zinc-500">
-                      {new Date(order.createdAt).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell>KES {order.total.toLocaleString()}</TableCell>
-                    <TableCell>
-                      <Badge variant={statusVariant(order.status)}>
-                        {order.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex flex-wrap gap-2">
-                        {order.status === 'pending' && (
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            disabled={confirmMutation.isPending}
-                            onClick={() => confirmMutation.mutate(order.id)}
-                          >
-                            Confirm
-                          </Button>
-                        )}
-                        {['pending', 'confirmed', 'processing'].includes(
-                          order.status,
-                        ) && (
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="text-zinc-600"
-                            disabled={cancelMutation.isPending}
-                            onClick={() => {
-                              if (confirm(`Cancel order ${order.orderNumber}?`)) {
-                                cancelMutation.mutate(order.id);
-                              }
-                            }}
-                          >
-                            Cancel
-                          </Button>
-                        )}
-                        {['pending', 'confirmed', 'processing'].includes(
-                          order.status,
-                        ) && (
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => setShipOrderId(order.id)}
-                          >
-                            Ship
-                          </Button>
-                        )}
-                        {['completed', 'delivered', 'shipped', 'confirmed'].includes(
-                          order.status,
-                        ) && (
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="text-red-600"
-                            disabled={refundMutation.isPending}
-                            onClick={() => {
-                              if (confirm(`Refund order ${order.orderNumber}?`)) {
-                                refundMutation.mutate(order.id);
-                              }
-                            }}
-                          >
-                            Refund
-                          </Button>
-                        )}
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {orders.map((order) => {
+                  const isExpanded = expandedOrderId === order.id;
+                  return (
+                    <Fragment key={order.id}>
+                      <TableRow 
+                        className="cursor-pointer hover:bg-zinc-50/50"
+                        onClick={() => setExpandedOrderId(isExpanded ? null : order.id)}
+                      >
+                        <TableCell className="font-medium">
+                          <span className="flex items-center gap-1.5 text-amber-600 hover:text-amber-700">
+                            {isExpanded ? "▼" : "▶"} {order.orderNumber}
+                          </span>
+                        </TableCell>
+                        <TableCell>{order.customer}</TableCell>
+                        <TableCell className="text-zinc-500">
+                          {new Date(order.createdAt).toLocaleDateString()}
+                        </TableCell>
+                        <TableCell>KES {order.total.toLocaleString()}</TableCell>
+                        <TableCell>
+                          <Badge variant={statusVariant(order.status)}>
+                            {order.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell onClick={(e) => e.stopPropagation()}>
+                          <div className="flex flex-wrap gap-2">
+                            {order.status === 'pending' && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                disabled={confirmMutation.isPending}
+                                onClick={() => confirmMutation.mutate(order.id)}
+                              >
+                                Confirm
+                              </Button>
+                            )}
+                            {['pending', 'confirmed', 'processing'].includes(
+                              order.status,
+                            ) && (
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="text-zinc-600"
+                                disabled={cancelMutation.isPending}
+                                onClick={() => {
+                                  if (confirm(`Cancel order ${order.orderNumber}?`)) {
+                                    cancelMutation.mutate(order.id);
+                                  }
+                                }}
+                              >
+                                Cancel
+                              </Button>
+                            )}
+                            {['pending', 'confirmed', 'processing'].includes(
+                              order.status,
+                            ) && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => setShipOrderId(order.id)}
+                              >
+                                Ship
+                              </Button>
+                            )}
+                            {['completed', 'delivered', 'shipped', 'confirmed'].includes(
+                              order.status,
+                            ) && (
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="text-red-600"
+                                disabled={refundMutation.isPending}
+                                onClick={() => {
+                                  if (confirm(`Refund order ${order.orderNumber}?`)) {
+                                    refundMutation.mutate(order.id);
+                                  }
+                                }}
+                              >
+                                Refund
+                              </Button>
+                            )}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                      {isExpanded && (
+                        <TableRow className="bg-zinc-50/50 dark:bg-zinc-900/10">
+                          <TableCell colSpan={6} className="p-4 border-t border-zinc-150">
+                            <div className="grid gap-6 md:grid-cols-2 text-sm text-zinc-600 dark:text-zinc-400">
+                              <div>
+                                <h4 className="font-semibold text-zinc-900 dark:text-zinc-100 mb-2">Shipping Details</h4>
+                                <p>{order.shippingAddress.firstName} {order.shippingAddress.lastName}</p>
+                                <p>{order.shippingAddress.street}</p>
+                                <p>{order.shippingAddress.city}, {order.shippingAddress.postalCode}</p>
+                              </div>
+                              <div>
+                                <h4 className="font-semibold text-zinc-900 dark:text-zinc-100 mb-2">Order Items</h4>
+                                <div className="space-y-1">
+                                  {order.items.map((item) => (
+                                    <div key={item.id} className="flex justify-between">
+                                      <span>{item.name} <span className="text-zinc-400">x{item.quantity}</span></span>
+                                      <span>KES {item.totalPrice.toLocaleString()}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div className="mt-4 pt-4 border-t border-zinc-100 dark:border-zinc-800">
+                              <h4 className="font-semibold text-zinc-900 dark:text-zinc-100 mb-2">Payment Transactions</h4>
+                              {order.payments.length === 0 ? (
+                                <p className="text-zinc-500">No payment records found.</p>
+                              ) : (
+                                <div className="space-y-3">
+                                  {order.payments.map((payment) => (
+                                    <div key={payment.id} className="flex items-center justify-between border-b border-zinc-100/50 pb-2 last:border-0">
+                                      <div>
+                                        <p className="font-medium text-zinc-800 dark:text-zinc-200">
+                                          {payment.provider.toUpperCase()} (Ref: {payment.providerRef || "None"})
+                                        </p>
+                                        <p className="text-xs text-zinc-500">
+                                          Amount: KES {payment.amount.toLocaleString()} | Status: {payment.status.toUpperCase()}
+                                        </p>
+                                        {payment.metadata?.bankDetails && (
+                                          <div className="mt-1 text-xs text-zinc-500 bg-zinc-100 p-2 rounded dark:bg-zinc-800">
+                                            <strong>Bank Details:</strong> Bank: {payment.metadata.bankDetails.bankName} | Acc: {payment.metadata.bankDetails.accountNumber} | Ref: {payment.metadata.bankDetails.reference}
+                                          </div>
+                                        )}
+                                      </div>
+                                      <div>
+                                        {payment.status === 'pending' && (
+                                          <Button
+                                            size="sm"
+                                            variant="outline"
+                                            className="border-amber-500 text-amber-600 hover:bg-amber-50"
+                                            disabled={approvePaymentMutation.isPending}
+                                            onClick={() => approvePaymentMutation.mutate(payment.id)}
+                                          >
+                                            {approvePaymentMutation.isPending ? "Approving..." : "Approve Payment"}
+                                          </Button>
+                                        )}
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </Fragment>
+                  );
+                })}
               </TableBody>
             </Table>
           )}

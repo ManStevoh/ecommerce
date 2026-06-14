@@ -72,3 +72,26 @@ export async function fetchMyOrders(tenantId: string): Promise<CustomerOrder[]> 
   if (!email) return orders;
   return orders.filter((o) => o.customerEmail === email);
 }
+
+export async function fetchPublicOrder(
+  tenantId: string,
+  orderNumber: string,
+  email: string,
+): Promise<any> {
+  const res = await fetch(
+    `${API_URL}/api/v1/orders/public/${orderNumber}?email=${encodeURIComponent(
+      email,
+    )}`,
+    {
+      headers: {
+        'x-tenant-id': tenantId,
+      },
+      cache: 'no-store',
+    },
+  );
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message ?? 'Order not found');
+  }
+  return res.json();
+}

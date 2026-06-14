@@ -40,6 +40,15 @@ export class OrdersController {
     return this.ordersService.findAll(status);
   }
 
+  @Get('public/:orderNumber')
+  @Public()
+  findPublic(
+    @Param('orderNumber') orderNumber: string,
+    @Query('email') email: string,
+  ) {
+    return this.ordersService.findPublic(orderNumber, email);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.ordersService.findOne(id);

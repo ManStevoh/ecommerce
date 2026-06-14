@@ -26,4 +26,9 @@ export class PaymentsController {
   findOne(@Param('id') id: string) {
     return this.paymentsService.findOne(id);
   }
+
+  @Post(':id/approve')
+  approve(@Param('id') id: string) {
+    return this.paymentsService.approve(id);
+  }
 }

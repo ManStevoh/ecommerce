@@ -114,7 +114,7 @@ export class OrdersService {
   async findAll(status?: OrderStatus): Promise<unknown[]> {
     return this.prisma.order.findMany({
       where: { ...this.tenantWhere(), ...(status && { status }) },
-      include: { items: true },
+      include: { items: true, payments: true },
       orderBy: { createdAt: 'desc' },
     });
   }
@@ -122,9 +122,27 @@ export class OrdersService {
   async findOne(id: string): Promise<unknown> {
     const order = await this.prisma.order.findFirst({
       where: { id, ...this.tenantWhere() },
-      include: { items: true },
+      include: { items: true, payments: true },
     });
     if (!order) throw new NotFoundException(`Order ${id} not found`);
+    return order;
+  }
+
+  async findPublic(orderNumber: string, email: string): Promise<unknown> {
+    const tenantId = this.tenantContext.getTenantId();
+    const order = await this.prisma.order.findFirst({
+      where: {
+        orderNumber,
+        customerEmail: email,
+        tenantId,
+      },
+      include: { items: true, payments: true },
+    });
+    if (!order) {
+      throw new NotFoundException(
+        `Order ${orderNumber} not found for customer ${email}`,
+      );
+    }
     return order;
   }
 

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PaymentStatus, Prisma } from '@nexora/database';
 import { PaymentProvider } from '@nexora/shared-types';
 import { PrismaService } from '../database/prisma.service';
@@ -136,5 +136,37 @@ export class PaymentsService {
     return this.prisma.payment.findFirst({
       where: { id, ...this.tenantWhere() },
     });
+  }
+
+  async approve(id: string) {
+    const tenantId = this.tenantContext.getTenantId();
+    const payment = await this.prisma.payment.findFirst({
+      where: { id, ...this.tenantWhere() },
+    });
+    if (!payment) {
+      throw new NotFoundException(`Payment ${id} not found`);
+    }
+    if (payment.status === PaymentStatus.COMPLETED) {
+      return payment;
+    }
+
+    const updated = await this.prisma.payment.update({
+      where: { id },
+      data: {
+        status: PaymentStatus.COMPLETED,
+        paidAt: new Date(),
+      },
+    });
+
+    if (payment.orderId) {
+      await this.paymentEvents.paymentCompleted(tenantId, {
+        paymentId: payment.id,
+        orderIds: [payment.orderId],
+        provider: payment.provider as PaymentProvider,
+        amount: Number(payment.amount),
+      });
+    }
+
+    return updated;
   }
 }

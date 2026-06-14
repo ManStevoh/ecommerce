@@ -42,4 +42,5 @@ export const PUBLIC_PATHS: RegExp[] = [
   /^\/api\/v1\/reviews$/,
   /^\/api\/v1\/media\/files\//,
   /^\/api\/v1\/tickets$/,
+  /^\/api\/v1\/orders\/public\//,
 ];
