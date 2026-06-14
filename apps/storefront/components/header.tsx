@@ -69,28 +69,28 @@ export function Header({
           </span>
         </Link>
 
-        {/* Search (desktop) */}
-        <div className="hidden flex-1 items-center gap-4 px-8 lg:flex lg:max-w-2xl">
+        {/* Search (desktop/tablet) */}
+        <div className="hidden flex-1 items-center gap-4 px-4 md:px-8 md:flex md:max-w-xl lg:max-w-2xl">
           <AiSearchBar />
         </div>
 
-        {/* Desktop Nav */}
-        <nav className="hidden items-center gap-3.5 lg:flex">
+        {/* Desktop/Tablet Nav */}
+        <nav className="hidden items-center gap-2 lg:gap-3.5 md:flex">
 
           {/* User Button */}
           <Link
             href="/login"
-            className="group flex items-center gap-2 rounded-full border border-zinc-200/80 bg-white/40 px-3.5 py-1.5 text-sm font-medium text-zinc-600 shadow-sm backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-zinc-50 hover:text-zinc-900 dark:border-zinc-800/80 dark:bg-zinc-950/40 dark:text-zinc-400 dark:hover:border-zinc-700 dark:hover:bg-zinc-900 dark:hover:text-zinc-50"
+            className="group flex items-center gap-2 rounded-full border border-zinc-200/80 bg-white/40 p-1.5 lg:px-3.5 lg:py-1.5 text-sm font-medium text-zinc-600 shadow-sm backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-zinc-50 hover:text-zinc-900 dark:border-zinc-800/80 dark:bg-zinc-950/40 dark:text-zinc-400 dark:hover:border-zinc-700 dark:hover:bg-zinc-900 dark:hover:text-zinc-50"
             aria-label="Account"
           >
             <User className="h-4 w-4 text-zinc-400 group-hover:scale-110 group-hover:text-zinc-600 dark:text-zinc-500 dark:group-hover:text-zinc-300 transition-all duration-300" />
-            <span className="font-semibold tracking-tight">Login</span>
+            <span className="hidden lg:inline font-semibold tracking-tight">Login</span>
           </Link>
 
           {/* Wishlist Button */}
           <Link
             href="/wishlist"
-            className="group flex items-center gap-2 rounded-full border border-zinc-200/80 bg-white/40 px-3.5 py-1.5 text-sm font-medium text-zinc-600 shadow-sm backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-zinc-50 hover:text-zinc-900 dark:border-zinc-800/80 dark:bg-zinc-950/40 dark:text-zinc-400 dark:hover:border-zinc-700 dark:hover:bg-zinc-900 dark:hover:text-zinc-50"
+            className="group flex items-center gap-2 rounded-full border border-zinc-200/80 bg-white/40 p-1.5 lg:px-3.5 lg:py-1.5 text-sm font-medium text-zinc-600 shadow-sm backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-zinc-50 hover:text-zinc-900 dark:border-zinc-800/80 dark:bg-zinc-950/40 dark:text-zinc-400 dark:hover:border-zinc-700 dark:hover:bg-zinc-900 dark:hover:text-zinc-50"
             aria-label="Wishlist"
           >
             <Heart className={`h-4 w-4 transition-all duration-300 group-hover:scale-110 ${
@@ -98,7 +98,7 @@ export function Header({
                 ? "text-red-500 fill-red-500 animate-pulse" 
                 : "text-zinc-400 group-hover:text-zinc-600 dark:text-zinc-500 dark:group-hover:text-zinc-300"
             }`} />
-            <span className="font-semibold tracking-tight">Favorites</span>
+            <span className="hidden lg:inline font-semibold tracking-tight">Favorites</span>
             {wishlistCount > 0 && (
               <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-bold text-white shadow-sm animate-scale-in">
                 {wishlistCount}
@@ -109,11 +109,11 @@ export function Header({
           {/* Cart Button */}
           <Link
             href="/cart"
-            className="group relative flex items-center gap-2 rounded-full border border-zinc-200/80 bg-white/40 px-3.5 py-1.5 text-sm font-medium text-zinc-600 shadow-sm backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-zinc-50 hover:text-zinc-900 dark:border-zinc-800/80 dark:bg-zinc-950/40 dark:text-zinc-400 dark:hover:border-zinc-700 dark:hover:bg-zinc-900 dark:hover:text-zinc-50"
+            className="group relative flex items-center gap-2 rounded-full border border-zinc-200/80 bg-white/40 p-1.5 lg:px-3.5 lg:py-1.5 text-sm font-medium text-zinc-600 shadow-sm backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-zinc-50 hover:text-zinc-900 dark:border-zinc-800/80 dark:bg-zinc-950/40 dark:text-zinc-400 dark:hover:border-zinc-700 dark:hover:bg-zinc-900 dark:hover:text-zinc-50"
             aria-label="Cart"
           >
             <ShoppingBag className="h-4 w-4 text-zinc-400 group-hover:scale-110 group-hover:text-zinc-600 dark:text-zinc-500 dark:group-hover:text-zinc-300 transition-all duration-300" />
-            <span className="font-semibold tracking-tight">Cart</span>
+            <span className="hidden lg:inline font-semibold tracking-tight">Cart</span>
             <span className={`flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-[10px] font-bold text-white shadow-sm transition-all duration-300 ${
               cartCount > 0 ? "bg-theme-accent animate-scale-in" : "bg-zinc-300 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-400"
             }`}>
@@ -127,7 +127,7 @@ export function Header({
         </nav>
 
         {/* Mobile controls */}
-        <div className="flex items-center gap-2 lg:hidden">
+        <div className="flex items-center gap-2 md:hidden">
           <ThemeToggle />
           <Link
             href="/cart"
@@ -146,7 +146,7 @@ export function Header({
       </div>
 
       {/* Mobile search */}
-      <div className="border-t border-zinc-100 px-4 pb-3 dark:border-zinc-800/50 lg:hidden">
+      <div className="border-t border-zinc-100 px-4 pb-3 dark:border-zinc-800/50 md:hidden">
         <AiSearchBar />
       </div>
     </header>
