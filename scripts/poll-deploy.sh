@@ -1,6 +1,6 @@
 #!/bin/bash
 # Path to this project's directory
-PROJECT_DIR="/home/staticlumen/Projects/ecommerce"
+PROJECT_DIR="/home/staticlumen/Websites/ecommerce"
 
 # Navigate to the project directory
 cd "$PROJECT_DIR" || { echo "Directory $PROJECT_DIR not found"; exit 1; }
