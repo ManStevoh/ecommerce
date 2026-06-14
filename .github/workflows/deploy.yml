@@ -1,0 +1,25 @@
+name: CD - Deploy Platform
+
+on:
+  push:
+    branches: [main]
+  # Allows manual runs from the Actions tab on GitHub
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy to Server
+    runs-on: self-hosted
+
+    steps:
+      - name: Sync codebase to latest origin main
+        run: |
+          cd /home/staticlumen/Websites/ecommerce
+          git fetch origin main
+          git reset --hard origin/main
+
+      - name: Execute platform update script
+        run: |
+          cd /home/staticlumen/Websites/ecommerce
+          chmod +x scripts/update-platform.sh
+          ./scripts/update-platform.sh
