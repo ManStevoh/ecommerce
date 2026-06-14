@@ -151,25 +151,33 @@ chmod +x scripts/update-platform.sh
 ./scripts/update-platform.sh
 ```
 
-### 5.4: Fully Automate Deployment via Git Polling (Cron)
-If you do not have Admin permissions on the GitHub repository to configure GitHub Actions/Runners, you can automate deployments directly on the server by running a background cron job that polls GitHub for updates.
+### 5.4: Fully Automate Deployment via GitHub Actions (Self-Hosted Runner)
+To fully automate deployments on push, a self-hosted GitHub Actions runner is configured on the production server.
 
-A polling script is located at [scripts/poll-deploy.sh](file:///home/staticlumen/Projects/ecommerce/scripts/poll-deploy.sh).
+The configuration workflow is defined in `.github/workflows/deploy.yml`.
 
 #### Setup Instructions on the Server:
-1. Make sure the polling script is executable:
+1. Create a runner directory and extract the GitHub Actions runner agent:
    ```bash
-   chmod +x /home/staticlumen/Websites/ecommerce/scripts/poll-deploy.sh
+   mkdir -p ~/actions-runner-ecommerce && cd ~/actions-runner-ecommerce
+   tar xzf <path-to-runner-tar-gz> ./
    ```
-2. Open your user's crontab scheduler:
+2. Configure the runner with your repository URL and action token:
    ```bash
-   crontab -e
+   ./config.sh --url https://github.com/ManStevoh/ecommerce --token <YOUR_TOKEN>
    ```
-3. Add the following line to check for updates every 5 minutes (adjust the schedule as needed). Using `flock -n /tmp/deploy.lock` ensures that only one build/deployment runs on the server at any given time to prevent resource exhaustion:
-   ```cron
-   */5 * * * * flock -n /tmp/deploy.lock /bin/bash /home/staticlumen/Websites/ecommerce/scripts/poll-deploy.sh >> /home/staticlumen/Websites/ecommerce/deploy.log 2>&1
+3. Install and run it as a system service:
+   ```bash
+   sudo ./svc.sh install
+   sudo ./svc.sh start
    ```
-4. Save and exit. The deployment status and updates will be logged to `/home/staticlumen/Websites/ecommerce/deploy.log`.
+4. Verify its status:
+   ```bash
+   sudo ./svc.sh status
+   ```
+
+Once active, any push to `main` will automatically trigger the deployment on the host.
+
 
 
 
