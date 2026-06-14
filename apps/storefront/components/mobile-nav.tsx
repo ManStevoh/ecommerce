@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, ShoppingBag, Heart, User, Home, HelpCircle, Store } from "lucide-react";
+import { Menu, X, ShoppingCart, Heart, User, Home, HelpCircle, Store } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button, cn } from "@nexora/ui";
 
@@ -108,7 +108,7 @@ export function MobileNav() {
           <div className="border-t border-zinc-100 px-4 py-4 dark:border-zinc-800/50">
             <Link href="/cart" onClick={() => setOpen(false)}>
               <Button variant="luxury" className="w-full gap-2 rounded-xl">
-                <ShoppingBag className="h-4 w-4" />
+                <ShoppingCart className="h-4 w-4" />
                 View cart
               </Button>
             </Link>

@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Button } from "@nexora/ui";
-import { ShoppingBag, Check } from "lucide-react";
+import { ShoppingCart, Check } from "lucide-react";
 import {
   getVariantLabel,
   getVariantPrice,
@@ -150,7 +150,7 @@ export function ProductPurchasePanel({
           "Out of stock"
         ) : (
           <>
-            <ShoppingBag className="h-4 w-4" />
+            <ShoppingCart className="h-4 w-4" />
             Add to Cart — {currency} {price.toLocaleString()}
           </>
         )}

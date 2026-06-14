@@ -9,7 +9,7 @@ import { products as fallbackProducts, type Product } from "@/lib/products";
 import { formatCurrency } from "@/lib/format";
 import { fetchProducts as fetchApiProducts, getProductPrice } from "@/lib/api";
 import { useCartStore } from "@/store/cart";
-import { ShoppingBag, Eye, Menu, X } from "lucide-react";
+import { ShoppingCart, Eye, Menu, X } from "lucide-react";
 import { ScrollAnimator } from "./scroll-animator";
 
 const PLACEHOLDER_IMAGE =
@@ -250,8 +250,8 @@ export function ProductGrid() {
                           });
                         }}
                       >
-                        <ShoppingBag className="h-3 w-3" />
-                        <span>Add to Bag</span>
+                        <ShoppingCart className="h-3 w-3" />
+                        <span>Add to Cart</span>
                       </Button>
                     </div>
                   </div>
@@ -279,9 +279,9 @@ export function ProductGrid() {
                           image: product.image,
                         })
                       }
-                      aria-label="Add to bag"
+                      aria-label="Add to cart"
                     >
-                      <ShoppingBag className="h-3.5 w-3.5" />
+                      <ShoppingCart className="h-3.5 w-3.5" />
                     </button>
                   </div>
                 </CardContent>

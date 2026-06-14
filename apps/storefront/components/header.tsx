@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ShoppingBag, Sparkles, Heart, User, Menu } from "lucide-react";
+import { ShoppingCart, Sparkles, Heart, User, Menu } from "lucide-react";
 import { Badge } from "@nexora/ui";
 import type { LayoutVariant } from "@nexora/themes";
 import { AiSearchBar } from "./ai-search-bar";
@@ -123,7 +123,7 @@ export function Header({
             className="group relative flex items-center gap-2 rounded-full border border-zinc-200/80 bg-white/40 p-1.5 lg:px-3.5 lg:py-1.5 text-sm font-medium text-zinc-600 shadow-sm backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-zinc-50 hover:text-zinc-900 dark:border-zinc-800/80 dark:bg-zinc-950/40 dark:text-zinc-400 dark:hover:border-zinc-700 dark:hover:bg-zinc-900 dark:hover:text-zinc-50"
             aria-label="Cart"
           >
-            <ShoppingBag className="h-4 w-4 text-zinc-400 group-hover:scale-110 group-hover:text-zinc-600 dark:text-zinc-500 dark:group-hover:text-zinc-300 transition-all duration-300" />
+            <ShoppingCart className="h-4 w-4 text-zinc-400 group-hover:scale-110 group-hover:text-zinc-600 dark:text-zinc-500 dark:group-hover:text-zinc-300 transition-all duration-300" />
             <span className="hidden lg:inline font-semibold tracking-tight">Cart</span>
             <span className={`flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-[10px] font-bold text-white shadow-sm transition-all duration-300 ${
               cartCount > 0 ? "bg-theme-accent animate-scale-in" : "bg-zinc-300 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-400"
@@ -160,7 +160,7 @@ export function Header({
             className="group relative flex h-9 w-9 items-center justify-center rounded-full border border-zinc-200/80 bg-white/40 shadow-sm backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-800/80 dark:bg-zinc-950/40 dark:hover:border-zinc-700 dark:hover:bg-zinc-900"
             aria-label="Cart"
           >
-            <ShoppingBag className="h-4 w-4 text-zinc-500 dark:text-zinc-400 group-hover:scale-110 transition-transform duration-300" />
+            <ShoppingCart className="h-4 w-4 text-zinc-500 dark:text-zinc-400 group-hover:scale-110 transition-transform duration-300" />
             {cartCount > 0 && (
               <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-theme-accent text-[8px] font-bold text-white shadow-sm animate-scale-in">
                 {cartCount}

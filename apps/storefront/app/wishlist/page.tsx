@@ -12,7 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@nexora/ui';
-import { Heart, ShoppingBag, Trash2 } from 'lucide-react';
+import { Heart, ShoppingCart, Trash2 } from 'lucide-react';
 import { useWishlistStore } from '@/store/wishlist';
 import { getAccessToken } from '@/lib/auth';
 import { formatCurrency } from '@/lib/format';
@@ -105,7 +105,7 @@ export default function WishlistPage() {
                         size="sm"
                         className="w-full gap-2 rounded-lg"
                       >
-                        <ShoppingBag className="h-3.5 w-3.5" />
+                        <ShoppingCart className="h-3.5 w-3.5" />
                         View product
                       </Button>
                     </Link>

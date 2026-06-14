@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button, Card, CardContent, EmptyState } from "@nexora/ui";
-import { Minus, Plus, Trash2, ShoppingBag, Truck, ArrowRight } from "lucide-react";
+import { Minus, Plus, Trash2, ShoppingCart, Truck, ArrowRight } from "lucide-react";
 import { formatCurrency } from "@/lib/format";
 import { useCartStore, useCartTotal } from "@/store/cart";
 import { ScrollAnimator } from "@/components/scroll-animator";
@@ -28,7 +28,7 @@ export default function CartPage() {
           action={
             <Link href="/">
               <Button variant="luxury" className="gap-2 rounded-xl">
-                <ShoppingBag className="h-4 w-4" />
+                <ShoppingCart className="h-4 w-4" />
                 Continue Shopping
               </Button>
             </Link>

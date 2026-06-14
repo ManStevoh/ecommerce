@@ -4,7 +4,7 @@ import { useRef } from "react";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, Button, Badge } from "@nexora/ui";
-import { Sparkles, ChevronLeft, ChevronRight, ShoppingBag } from "lucide-react";
+import { Sparkles, ChevronLeft, ChevronRight, ShoppingCart } from "lucide-react";
 import { fetchRecommendations } from "@/lib/api";
 import { formatCurrency } from "@/lib/format";
 import { useCartStore } from "@/store/cart";
@@ -125,8 +125,9 @@ export function RecommendedProducts() {
                         image: PLACEHOLDER,
                       })
                     }
+                    aria-label="Add to cart"
                   >
-                    <ShoppingBag className="h-3.5 w-3.5" />
+                    <ShoppingCart className="h-3.5 w-3.5" />
                   </Button>
                 </div>
               </CardContent>

@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@nexora/ui";
-import { ShoppingBag } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 
 export type CartProduct = {
@@ -30,7 +30,7 @@ export function AddToCartButton({ product }: { product: CartProduct }) {
         })
       }
     >
-      <ShoppingBag className="h-4 w-4" />
+      <ShoppingCart className="h-4 w-4" />
       Add to Cart — {product.price.toLocaleString()}
     </Button>
   );
