@@ -25,6 +25,10 @@ export default async function HomePage() {
 
       {/* Recommendations */}
       <RecommendedProducts />
+
+      <div className="fixed bottom-4 right-4 z-50 rounded bg-red-600 px-3 py-1 text-xs font-semibold text-white shadow-lg">
+        Deploy Test: Active
+      </div>
     </div>
   );
 }
