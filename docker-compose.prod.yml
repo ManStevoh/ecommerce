@@ -83,6 +83,11 @@ services:
       CORS_ORIGINS: "http://localhost:3000,http://localhost:3100,http://localhost:3200,*.kenwafula.cv"
       PORT: 3000
       PRISMA_SKIP_DOTENV: 1
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      JWT_SECRET: ${JWT_ACCESS_SECRET}
+      JWT_EXPIRES_IN: ${JWT_ACCESS_EXPIRES_IN:-15m}
+      JWT_REFRESH_EXPIRES_IN: ${JWT_REFRESH_EXPIRES_IN:-7d}
     depends_on:
       postgres:
         condition: service_healthy
