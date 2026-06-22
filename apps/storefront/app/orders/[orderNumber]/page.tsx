@@ -127,7 +127,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ orderN
           <CardHeader>
             <CardTitle className="text-red-600">Order Lookup Failed</CardTitle>
             <CardDescription>
-              We couldn't locate an order with number <strong>{orderNumber}</strong> matching email <strong>{email}</strong>.
+              We couldn&apos;t locate an order with number <strong>{orderNumber}</strong> matching email <strong>{email}</strong>.
             </CardDescription>
           </CardHeader>
           <CardContent>
