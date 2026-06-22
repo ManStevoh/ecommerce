@@ -1,4 +1,4 @@
-export type LayoutVariant = 'classic' | 'editorial' | 'minimal';
+export type LayoutVariant = 'classic' | 'editorial' | 'minimal' | 'modern';
 
 export type ThemePresetSlug =
   | 'luxury'

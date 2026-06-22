@@ -2,12 +2,17 @@ import { ProductGrid } from "@/components/product-grid";
 import { RecommendedProducts } from "@/components/recommended-products";
 import { ScrollAnimator } from "@/components/scroll-animator";
 import { getTenantFromHeaders } from "@/lib/tenant";
+import { resolveTheme } from "@nexora/themes";
+import { HomeHero } from "@/components/layouts/home-hero";
 
 export default async function HomePage() {
   const tenant = await getTenantFromHeaders();
+  const resolved = resolveTheme(tenant.theme);
 
   return (
     <div className="space-y-20">
+      <HomeHero tenantName={tenant.displayName} layoutVariant={resolved.layoutVariant} />
+
       {/* Products */}
       <section id="products">
         <ScrollAnimator>
@@ -20,7 +25,7 @@ export default async function HomePage() {
             </p>
           </div>
         </ScrollAnimator>
-        <ProductGrid />
+        <ProductGrid layoutVariant={resolved.layoutVariant} />
       </section>
 
       {/* Recommendations */}

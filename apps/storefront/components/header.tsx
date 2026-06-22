@@ -33,7 +33,9 @@ export function Header({
       ? "max-w-5xl"
       : variant === "editorial"
         ? "max-w-6xl"
-        : "max-w-[1600px]";
+        : variant === "modern"
+          ? "max-w-[1400px]"
+          : "max-w-[1600px]";
 
   return (
     <header

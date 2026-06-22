@@ -7,6 +7,7 @@ const MAIN_CLASS: Record<LayoutVariant, string> = {
   classic: "mx-auto max-w-[1600px] px-6 py-8",
   editorial: "mx-auto max-w-6xl px-8 py-10",
   minimal: "mx-auto max-w-5xl px-4 py-6",
+  modern: "mx-auto max-w-[1400px] px-8 py-12",
 };
 
 type Props = {

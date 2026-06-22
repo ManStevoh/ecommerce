@@ -119,6 +119,37 @@ export function HomeHero({ tenantName, layoutVariant }: Props) {
     );
   }
 
+  if (layoutVariant === "modern") {
+    return (
+      <section className="relative overflow-hidden rounded-[var(--tenant-radius,1.5rem)] bg-zinc-950 p-8 py-20 text-white md:p-16 md:py-28">
+        <div className="pointer-events-none absolute -right-20 -top-20 h-[400px] w-[400px] rounded-full bg-gradient-to-br from-indigo-500/20 to-purple-500/20 blur-3xl animate-pulse" />
+        <div className="pointer-events-none absolute -bottom-20 -left-20 h-[300px] w-[300px] rounded-full bg-amber-500/10 blur-3xl animate-float" />
+        
+        <div className="relative z-10 max-w-xl">
+          <span className="text-xs font-bold uppercase tracking-[0.3em] text-amber-400">
+            {tenantName}
+          </span>
+          <h1 className="mt-4 text-4xl font-black leading-tight tracking-tight md:text-5xl lg:text-6xl">
+            A New Era of
+            <span className="block bg-gradient-to-r from-amber-200 via-yellow-300 to-amber-400 bg-clip-text text-transparent font-serif italic font-normal">
+              Style and Design.
+            </span>
+          </h1>
+          <p className="mt-6 text-base text-zinc-400">
+            Explore the newly designed Modern Gallery layout. Clean, borderless grid, and premium details.
+          </p>
+          <div className="mt-8">
+            <Link href="#products">
+              <Button variant="luxury" size="lg" className="rounded-full px-8 py-6 text-sm font-semibold tracking-wider hover:scale-105 transition-all duration-300">
+                Browse Collection
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   // Classic (default)
   return (
     <section className="relative overflow-hidden rounded-3xl px-8 py-20 md:px-16 md:py-28">

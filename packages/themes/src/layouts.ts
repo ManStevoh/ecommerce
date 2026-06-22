@@ -20,6 +20,11 @@ export const LAYOUT_VARIANTS: {
     name: 'Minimal',
     description: 'Compact header and centered, low-profile hero.',
   },
+  {
+    slug: 'modern',
+    name: 'Modern Gallery',
+    description: 'Minimalist borderless grid with horizontal top navigation and elegant visual presentation.',
+  },
 ];
 
 export const PRESET_LAYOUT_VARIANTS: Record<ThemePresetSlug, LayoutVariant> = {
@@ -37,7 +42,7 @@ export const PRESET_LAYOUT_VARIANTS: Record<ThemePresetSlug, LayoutVariant> = {
 };
 
 export function isLayoutVariant(value: string): value is LayoutVariant {
-  return value === 'classic' || value === 'editorial' || value === 'minimal';
+  return value === 'classic' || value === 'editorial' || value === 'minimal' || value === 'modern';
 }
 
 export function resolveLayoutVariant(
