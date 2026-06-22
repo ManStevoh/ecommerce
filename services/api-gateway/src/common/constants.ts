@@ -50,4 +50,6 @@ export const PUBLIC_PATHS: RegExp[] = [
   /^\/api\/v1\/media\/files\//,
   /^\/api\/v1\/tickets$/,
   /^\/api\/v1\/orders\/public\//,
+  /^\/api\/v1\/theme-settings\/presets$/,
+  /^\/api\/v1\/theme-settings\/layouts$/,
 ];
