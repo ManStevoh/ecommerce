@@ -28,7 +28,12 @@ export class TenantIsolationMiddleware implements NestMiddleware {
       path.startsWith('/api/v1/tenants/by-subdomain/') ||
       path.startsWith('/api/tenants/by-subdomain/') ||
       /^\/api\/(v1\/)?tenants\/[^/]+$/.test(path) ||
-      /^\/api\/(v1\/)?tenants\/[^/]+\/status$/.test(path)
+      /^\/api\/(v1\/)?tenants\/[^/]+\/status$/.test(path) ||
+      // Static reference data — no tenant context needed
+      path === '/api/v1/theme-settings/presets' ||
+      path === '/api/theme-settings/presets' ||
+      path === '/api/v1/theme-settings/layouts' ||
+      path === '/api/theme-settings/layouts'
     ) {
       return next();
     }
