@@ -1,7 +1,11 @@
+"use client";
+
 import type { LayoutVariant } from "@nexora/themes";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { AnnouncementBar } from "@/components/announcement-bar";
+import { useThemeOverride } from "@/providers/theme-override-provider";
+import { ThemeSwitcherWidget } from "../theme-switcher-widget";
 
 const MAIN_CLASS: Record<LayoutVariant, string> = {
   classic: "mx-auto max-w-[1600px] px-6 py-8",
@@ -18,23 +22,28 @@ type Props = {
 };
 
 export function LayoutShell({
-  layoutVariant,
+  layoutVariant: serverLayoutVariant,
   tenantName,
   logoUrl,
   children,
 }: Props) {
+  const { layoutVariant: overrideLayoutVariant } = useThemeOverride();
+  const activeLayout = overrideLayoutVariant || serverLayoutVariant;
+
   return (
     <>
       <AnnouncementBar />
       <Header
         tenantName={tenantName}
         logoUrl={logoUrl}
-        variant={layoutVariant}
+        variant={activeLayout}
       />
-      <main className={MAIN_CLASS[layoutVariant]} data-layout={layoutVariant}>
+      <main className={MAIN_CLASS[activeLayout]} data-layout={activeLayout}>
         {children}
       </main>
-      <Footer tenantName={tenantName} variant={layoutVariant} />
+      <Footer tenantName={tenantName} variant={activeLayout} />
+      <ThemeSwitcherWidget />
     </>
   );
 }
+

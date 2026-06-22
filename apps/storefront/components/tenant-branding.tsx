@@ -1,5 +1,8 @@
+"use client";
+
 import { resolveTheme, type ThemeSettingsInput } from "@nexora/themes";
 import type { TenantTheme } from "@/lib/tenant";
+import { useThemeOverride } from "@/providers/theme-override-provider";
 
 type Props = {
   theme: TenantTheme;
@@ -7,9 +10,11 @@ type Props = {
 };
 
 export function TenantBranding({ theme, children }: Props) {
-  const resolved = resolveTheme(theme as ThemeSettingsInput);
+  const { resolvedTheme } = useThemeOverride();
+  const resolved = resolvedTheme || resolveTheme(theme as ThemeSettingsInput);
   
-  const cc = theme.customColors ?? {};
+  const activeTheme = resolvedTheme ? (resolvedTheme as any) : theme;
+  const cc = activeTheme.customColors ?? {};
   const darkBg = cc.darkBackgroundColor ?? "#09090b";
   const darkText = cc.darkTextColor ?? "#fafafa";
   const darkSurface = cc.darkSurfaceColor ?? "rgba(18, 18, 22, 0.72)";
@@ -48,8 +53,8 @@ export function TenantBranding({ theme, children }: Props) {
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: cssRules }} />
-      {theme.customCss ? (
-        <style dangerouslySetInnerHTML={{ __html: theme.customCss }} />
+      {resolved.customCss ? (
+        <style dangerouslySetInnerHTML={{ __html: resolved.customCss }} />
       ) : null}
       <div
         data-theme={resolved.themePreset}
@@ -60,3 +65,4 @@ export function TenantBranding({ theme, children }: Props) {
     </>
   );
 }
+

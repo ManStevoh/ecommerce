@@ -155,7 +155,7 @@ export default function BrandingPage() {
   return (
     <div className="admin-page">
       <PageHeader
-        title="Branding & Theme"
+        title="Theme Customize"
         description="Choose from 11 storefront themes or customize colors and typography"
         action={
           <Link href="/settings">

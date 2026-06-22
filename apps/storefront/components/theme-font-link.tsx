@@ -1,11 +1,16 @@
+"use client";
+
 import { googleFontsStylesheetUrl } from "@nexora/themes";
+import { useThemeOverride } from "@/providers/theme-override-provider";
 
 type Props = {
   fontFamily: string;
 };
 
 export function ThemeFontLink({ fontFamily }: Props) {
-  const href = googleFontsStylesheetUrl(fontFamily);
+  const { resolvedTheme } = useThemeOverride();
+  const activeFont = resolvedTheme?.fontFamily || fontFamily;
+  const href = googleFontsStylesheetUrl(activeFont);
   if (!href) return null;
 
   return (
@@ -16,7 +21,9 @@ export function ThemeFontLink({ fontFamily }: Props) {
         href="https://fonts.gstatic.com"
         crossOrigin="anonymous"
       />
+      {/* eslint-disable-next-line @next/next/no-page-custom-font */}
       <link rel="stylesheet" href={href} />
     </>
   );
 }
+

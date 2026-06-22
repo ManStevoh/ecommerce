@@ -9,6 +9,8 @@ import { ThemeFontLink } from "@/components/theme-font-link";
 import { LayoutShell } from "@/components/layouts/layout-shell";
 import { getTenantFromHeaders } from "@/lib/tenant";
 
+import { ThemeOverrideProvider } from "@/providers/theme-override-provider";
+
 export async function generateMetadata(): Promise<Metadata> {
   const tenant = await getTenantFromHeaders();
   return {
@@ -36,23 +38,25 @@ export default async function RootLayout({
       suppressHydrationWarning
       className={htmlClass}
     >
-      <head>
-        <ThemeFontLink fontFamily={tenant.theme.fontFamily} />
-      </head>
+      <head />
       <body className="font-sans antialiased">
         <ThemeProvider defaultTheme={defaultTheme} forcedTheme={forcedTheme}>
           <QueryProvider>
-            <TenantBranding theme={tenant.theme}>
-              <LayoutShell
-                layoutVariant={resolved.layoutVariant}
-                tenantName={tenant.displayName}
-                logoUrl={tenant.theme.logoUrl}
-              >
-                {children}
-              </LayoutShell>
-            </TenantBranding>
+            <ThemeOverrideProvider serverTheme={tenant.theme}>
+              <ThemeFontLink fontFamily={tenant.theme.fontFamily} />
+              <TenantBranding theme={tenant.theme}>
+                <LayoutShell
+                  layoutVariant={resolved.layoutVariant}
+                  tenantName={tenant.displayName}
+                  logoUrl={tenant.theme.logoUrl}
+                >
+                  {children}
+                </LayoutShell>
+              </TenantBranding>
+            </ThemeOverrideProvider>
           </QueryProvider>
         </ThemeProvider>
+
         <Script id="nexora-sw" strategy="afterInteractive">{`
           if ('serviceWorker' in navigator) {
             window.addEventListener('load', function () {

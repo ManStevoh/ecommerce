@@ -32,15 +32,21 @@ async function fetchProducts(): Promise<Product[]> {
   return fallbackProducts;
 }
 
+import { useThemeOverride } from "@/providers/theme-override-provider";
+
 export function ProductGrid({
-  layoutVariant = "classic",
+  layoutVariant: serverLayoutVariant = "classic",
 }: {
   layoutVariant?: LayoutVariant;
 }) {
+  const { layoutVariant: overrideLayoutVariant } = useThemeOverride();
+  const layoutVariant = overrideLayoutVariant || serverLayoutVariant;
+
   const { data, isLoading } = useQuery({
     queryKey: ["products"],
     queryFn: fetchProducts,
   });
+
   const addItem = useCartStore((s) => s.addItem);
   const [activeCategory, setActiveCategory] = useState("All");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);

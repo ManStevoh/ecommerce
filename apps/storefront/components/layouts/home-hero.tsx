@@ -1,7 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import { Button } from "@nexora/ui";
 import { ArrowRight, Star, Package, Users } from "lucide-react";
 import type { LayoutVariant } from "@nexora/themes";
+import { useThemeOverride } from "@/providers/theme-override-provider";
 
 type Props = {
   tenantName: string;
@@ -32,8 +35,12 @@ function HeroStats() {
   );
 }
 
-export function HomeHero({ tenantName, layoutVariant }: Props) {
+export function HomeHero({ tenantName, layoutVariant: serverLayoutVariant }: Props) {
+  const { layoutVariant: overrideLayoutVariant } = useThemeOverride();
+  const layoutVariant = overrideLayoutVariant || serverLayoutVariant;
+
   if (layoutVariant === "editorial") {
+
     return (
       <section className="relative overflow-hidden rounded-[var(--tenant-radius,1.5rem)] px-8 py-16 md:px-14 md:py-24">
         {/* Gradient background */}
