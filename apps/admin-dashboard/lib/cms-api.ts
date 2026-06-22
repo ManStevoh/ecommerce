@@ -1,13 +1,13 @@
-import { getAccessToken } from './auth';
+import { getAccessToken, getTenantId } from './auth';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000';
-const TENANT_ID = process.env.NEXT_PUBLIC_TENANT_ID ?? '';
 
 function headers(): Record<string, string> {
   const h: Record<string, string> = { 'Content-Type': 'application/json' };
   const token = getAccessToken();
   if (token) h.Authorization = `Bearer ${token}`;
-  if (TENANT_ID) h['x-tenant-id'] = TENANT_ID;
+  const tenantId = getTenantId();
+  if (tenantId) h['x-tenant-id'] = tenantId;
   return h;
 }
 

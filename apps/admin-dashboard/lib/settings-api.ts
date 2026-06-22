@@ -1,13 +1,13 @@
-import { getAccessToken } from './auth';
+import { getAccessToken, getTenantId } from './auth';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000';
-const TENANT_ID = process.env.NEXT_PUBLIC_TENANT_ID ?? '';
 
 function headers(): Record<string, string> {
   const h: Record<string, string> = { 'Content-Type': 'application/json' };
   const token = getAccessToken();
   if (token) h.Authorization = `Bearer ${token}`;
-  if (TENANT_ID) h['x-tenant-id'] = TENANT_ID;
+  const tenantId = getTenantId();
+  if (tenantId) h['x-tenant-id'] = tenantId;
   return h;
 }
 
@@ -103,7 +103,7 @@ export type CurrentTenant = {
 };
 
 export async function fetchCurrentTenant(): Promise<CurrentTenant | null> {
-  if (!TENANT_ID) return null;
+  if (!getTenantId()) return null;
   const res = await fetch(`${API_BASE}/api/v1/tenants/current`, {
     headers: headers(),
     cache: 'no-store',
@@ -113,7 +113,7 @@ export async function fetchCurrentTenant(): Promise<CurrentTenant | null> {
 }
 
 export async function fetchStoreSettings(): Promise<StoreSettings | null> {
-  if (!TENANT_ID) return null;
+  if (!getTenantId()) return null;
   const res = await fetch(`${API_BASE}/api/v1/store-settings`, {
     headers: headers(),
     cache: 'no-store',
@@ -147,7 +147,7 @@ export async function updateStoreSettings(
 }
 
 export async function fetchThemeSettings(): Promise<ThemeSettings | null> {
-  if (!TENANT_ID) return null;
+  if (!getTenantId()) return null;
   const res = await fetch(`${API_BASE}/api/v1/theme-settings`, {
     headers: headers(),
     cache: 'no-store',

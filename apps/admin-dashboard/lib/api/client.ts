@@ -1,7 +1,16 @@
-import { getAccessToken } from '../auth';
+import { getAccessToken, getTenantId } from '../auth';
 
 export const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000';
-export const TENANT_ID = process.env.NEXT_PUBLIC_TENANT_ID ?? '';
+
+export let TENANT_ID = '';
+
+if (typeof window !== 'undefined') {
+  TENANT_ID = process.env.NEXT_PUBLIC_TENANT_ID || getTenantId();
+}
+
+export function getClientTenantId(): string {
+  return TENANT_ID;
+}
 
 export function apiHeaders(): Record<string, string> {
   const headers: Record<string, string> = { 'Content-Type': 'application/json' };

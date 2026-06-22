@@ -33,6 +33,13 @@ export function getStoredUser(): AuthUser | null {
   }
 }
 
+export function getTenantId(): string {
+  if (typeof window === 'undefined') return '';
+  const envTenantId = process.env.NEXT_PUBLIC_TENANT_ID;
+  if (envTenantId) return envTenantId;
+  return getStoredUser()?.tenantId ?? '';
+}
+
 export function saveSession(session: AuthSession): void {
   localStorage.setItem(TOKEN_KEY, session.accessToken);
   localStorage.setItem(REFRESH_KEY, session.refreshToken);

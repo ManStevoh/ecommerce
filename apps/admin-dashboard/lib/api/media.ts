@@ -1,4 +1,4 @@
-import { API_BASE, TENANT_ID, apiHeaders } from './client';
+import { API_BASE, apiHeaders, getClientTenantId } from './client';
 import { getAccessToken } from '../auth';
 
 export type MediaAsset = {
@@ -12,7 +12,7 @@ export type MediaAsset = {
 };
 
 export async function fetchMedia(): Promise<MediaAsset[]> {
-  if (!TENANT_ID) return [];
+  if (!getClientTenantId()) return [];
   const res = await fetch(`${API_BASE}/api/v1/media`, {
     headers: apiHeaders(),
     cache: 'no-store',
@@ -46,7 +46,8 @@ export async function uploadMedia(file: File): Promise<MediaAsset> {
   form.append('file', file);
   const token = getAccessToken();
   const headers: Record<string, string> = {};
-  if (TENANT_ID) headers['x-tenant-id'] = TENANT_ID;
+  const tenantId = getClientTenantId();
+  if (tenantId) headers['x-tenant-id'] = tenantId;
   if (token) headers.Authorization = `Bearer ${token}`;
 
   const res = await fetch(`${API_BASE}/api/v1/media/upload`, {
@@ -57,3 +58,4 @@ export async function uploadMedia(file: File): Promise<MediaAsset> {
   if (!res.ok) throw new Error(`Failed to upload media (${res.status})`);
   return res.json();
 }
+
