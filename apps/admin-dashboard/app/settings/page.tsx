@@ -233,7 +233,7 @@ export default function SettingsPage() {
         <p className="text-sm text-zinc-500">
           Customize storefront colors and logo on the{" "}
           <Link href="/settings/branding" className="text-indigo-600 hover:underline">
-            Branding page
+            Theme Customize page
           </Link>
           . Manage coupons, campaigns, and segments in{" "}
           <Link href="/marketing" className="text-indigo-600 hover:underline">

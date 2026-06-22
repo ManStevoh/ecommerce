@@ -12,7 +12,7 @@ const PAGE_TITLES: Record<string, string> = {
   '/support': 'Support',
   '/media': 'Media',
   '/settings': 'Settings',
-  '/settings/branding': 'Branding',
+  '/settings/branding': 'Theme Customize',
   '/settings/security': 'Security',
   '/cms/pages': 'Landing Pages',
   '/marketing': 'Marketing',

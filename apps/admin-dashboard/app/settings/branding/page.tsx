@@ -325,7 +325,7 @@ export default function BrandingPage() {
       )}
 
       <Button className="mt-6" onClick={() => void handleSave()} disabled={saving || loading}>
-        {saving ? "Saving…" : "Save Branding"}
+        {saving ? "Saving…" : "Save Theme Customizations"}
       </Button>
     </div>
   );
