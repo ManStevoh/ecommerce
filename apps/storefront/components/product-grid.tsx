@@ -9,7 +9,7 @@ import { products as fallbackProducts, type Product } from "@/lib/products";
 import { formatCurrency } from "@/lib/format";
 import { fetchProducts as fetchApiProducts, getProductPrice } from "@/lib/api";
 import { useCartStore } from "@/store/cart";
-import { ShoppingCart, Eye, Menu, X } from "lucide-react";
+import { ShoppingCart, Eye, Menu, X, Heart } from "lucide-react";
 import { ScrollAnimator } from "./scroll-animator";
 import type { LayoutVariant } from "@nexora/themes";
 
@@ -106,6 +106,122 @@ export function ProductGrid({
                 <div className="skeleton h-4 w-1/3 rounded-lg" />
               </div>
             ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (layoutVariant === "minimal") {
+    return (
+      <div className="space-y-12">
+        {/* Horizontal Category Navigation Bar */}
+        <div className="relative border-b border-zinc-200/50 pb-4 dark:border-zinc-800/50">
+          <div className="flex overflow-x-auto scrollbar-none gap-2 py-1 px-1">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => setActiveCategory(cat)}
+                className={`rounded-lg border px-5 py-2 text-xs font-bold transition-all duration-300 ${
+                  activeCategory === cat
+                    ? "bg-emerald-600 text-white border-emerald-600 shadow-sm"
+                    : "border-zinc-200 text-zinc-600 hover:bg-zinc-50 hover:text-zinc-950 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-900"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Product Grid Area */}
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-semibold text-zinc-500">
+              Category: <span className="font-bold text-emerald-600">{activeCategory}</span>
+            </span>
+            <span className="text-xs font-semibold text-zinc-400">
+              {filtered.length} Items
+            </span>
+          </div>
+
+          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+            {filtered.map((product, i) => {
+              const originalPrice = product.price * 1.25;
+
+              return (
+                <ScrollAnimator key={product.id} delay={i * 0.05}>
+                  <div className="bg-white dark:bg-zinc-950 rounded-2xl shadow-lg border border-zinc-100 dark:border-zinc-900 overflow-hidden transition-all duration-300 group flex flex-col h-full hover:shadow-xl">
+                    <Link href={`/product/${product.slug}`} className="relative block bg-zinc-50 dark:bg-zinc-900 p-4">
+                      <div className="h-48 relative overflow-hidden flex items-center justify-center">
+                        <Image
+                          src={product.image}
+                          alt={product.name}
+                          fill
+                          className="object-contain p-2 transition-transform duration-500 group-hover:scale-105"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                        />
+                      </div>
+                      <div className="absolute top-3 left-3">
+                        <Badge className="bg-emerald-600 text-white border-0 text-[10px] font-bold px-2 py-0.5 rounded shadow-sm">
+                          Organic
+                        </Badge>
+                      </div>
+                    </Link>
+
+                    <div className="p-4 flex flex-col justify-between flex-1 gap-4">
+                      <div className="flex flex-col">
+                        <h3 className="font-bold text-zinc-900 dark:text-white mb-2 group-hover:text-emerald-600 transition-colors text-base line-clamp-1">
+                          <Link href={`/product/${product.slug}`}>{product.name}</Link>
+                        </h3>
+                        <p className="text-xs text-zinc-500 dark:text-zinc-400 line-clamp-2 leading-relaxed">
+                          {product.description || "Fresh natural ingredients grown locally and sourced with care for your family's table."}
+                        </p>
+                      </div>
+
+                      <div className="flex justify-between items-center mt-auto border-t border-zinc-100 dark:border-zinc-800 pt-3.5 gap-1">
+                        <div className="flex flex-wrap gap-1.5 items-baseline">
+                          <span className="font-extrabold text-emerald-600 text-base sm:text-lg">
+                            {formatCurrency(product.price)}
+                          </span>
+                          <span className="text-xs text-zinc-400 line-through">
+                            {formatCurrency(originalPrice)}
+                          </span>
+                        </div>
+
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            className="h-9 w-9 flex items-center justify-center bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-900 dark:hover:bg-zinc-800 text-zinc-600 hover:text-rose-500 dark:text-zinc-400 rounded-full border border-zinc-200/60 dark:border-zinc-800 transition-all duration-200"
+                            aria-label="Add to wishlist"
+                          >
+                            <Heart className="h-4 w-4" />
+                          </button>
+                          
+                          <button
+                            type="button"
+                            className="h-9 w-9 flex items-center justify-center bg-emerald-600 hover:bg-emerald-700 text-white rounded-full transition-all duration-200 shadow-sm hover:shadow"
+                            onClick={() =>
+                              addItem({
+                                productId: product.id,
+                                slug: product.slug,
+                                name: product.name,
+                                price: product.price,
+                                image: product.image,
+                              })
+                            }
+                            aria-label="Add to cart"
+                          >
+                            <ShoppingCart className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ScrollAnimator>
+              );
+            })}
           </div>
         </div>
       </div>
