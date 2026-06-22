@@ -75,15 +75,6 @@ export default function DashboardPage() {
         }
       />
 
-      {/* GitHub Actions Test Banner */}
-      <div className="mb-6 rounded-lg border border-purple-200 bg-purple-50 p-4 text-center text-sm text-purple-900 shadow-sm dark:border-purple-900/30 dark:bg-purple-950/20 dark:text-purple-300">
-        🚀 <strong>GitHub Actions Deploy Test:</strong> If you see this message in the Admin Dashboard, the automated deployment pipeline is working successfully!
-      </div>
-
-      <div className="fixed bottom-4 right-4 z-50 rounded bg-purple-600 px-3 py-1 text-xs font-semibold text-white shadow-lg">
-        GitHub Actions Test: Active (Admin)
-      </div>
-
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           title="Revenue"
