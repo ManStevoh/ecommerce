@@ -8,11 +8,6 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-20">
-      {/* GitHub Actions Test Banner */}
-      <div className="rounded-lg border border-purple-200 bg-purple-50 p-4 text-center text-sm text-purple-900 shadow-sm dark:border-purple-900/30 dark:bg-purple-950/20 dark:text-purple-300">
-        🚀 <strong>GitHub Actions Deploy Test:</strong> If you see this message, the automated deployment pipeline is working successfully!
-      </div>
-
       {/* Products */}
       <section id="products">
         <ScrollAnimator>
@@ -30,10 +25,6 @@ export default async function HomePage() {
 
       {/* Recommendations */}
       <RecommendedProducts />
-
-      <div className="fixed bottom-4 right-4 z-50 rounded bg-purple-600 px-3 py-1 text-xs font-semibold text-white shadow-lg">
-        GitHub Actions Test: Active
-      </div>
     </div>
   );
 }
