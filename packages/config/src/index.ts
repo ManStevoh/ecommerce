@@ -10,8 +10,9 @@ export const baseEnvSchema = z.object({
     .string()
     .min(32)
     .default(
-      process.env.JWT_ACCESS_SECRET ||
-      'nexora-dev-jwt-secret-change-in-production-32chars'
+      () =>
+        process.env.JWT_ACCESS_SECRET ||
+        'nexora-dev-jwt-secret-change-in-production-32chars'
     ),
   JWT_EXPIRES_IN: z.string().default('7d'),
   JWT_REFRESH_EXPIRES_IN: z.string().default('30d'),
