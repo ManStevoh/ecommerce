@@ -26,10 +26,9 @@ export default async function RootLayout({
   const tenant = await getTenantFromHeaders();
   const resolved = resolveTheme(tenant.theme);
 
-  const themeMode = tenant.theme.customColors?.themeMode ?? "system";
-  const htmlClass = themeMode === "dark" ? "dark" : undefined;
-  const forcedTheme = themeMode === "system" ? undefined : themeMode;
-  const defaultTheme = themeMode === "system" ? "system" : themeMode;
+  const htmlClass = undefined;
+  const forcedTheme = "light";
+  const defaultTheme = "light";
 
   return (
     <html
