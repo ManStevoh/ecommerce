@@ -13,7 +13,11 @@ import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      // In production (container), ignore .env files so Docker env vars take precedence
+      ignoreEnvFile: process.env.PRISMA_SKIP_DOTENV === '1',
+    }),
     GatewayConfigModule,
     ThrottlerModule.forRootAsync({
       imports: [GatewayConfigModule],
